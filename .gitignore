@@ -45,6 +45,4 @@ terraform.rc
 ## Sergei additional ignores 
 *.txt
 .log
-TODO*
-GEMINI.md
 extras

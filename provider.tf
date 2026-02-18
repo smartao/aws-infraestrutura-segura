@@ -20,8 +20,10 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Management = "Terraform"
-      Owner      = "Sergei"
+      ManagedBy   = "Terraform"
+      Owner       = "Sergei"
+      Project     = "infraestrutura-segura"
+      Environment = "Dev"
     }
   }
 }
