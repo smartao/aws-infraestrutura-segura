@@ -45,4 +45,4 @@ terraform.rc
 ## Sergei additional ignores 
 *.txt
 .log
-extras
+local

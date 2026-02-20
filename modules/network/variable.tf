@@ -18,4 +18,7 @@ variable "azs" {
   type        = list(string)
 }
 
+variable "environment" {
+  type = string
+}
 

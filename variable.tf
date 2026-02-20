@@ -1,3 +1,36 @@
+# =============================================================================
+# Global Configuration
+# =============================================================================
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+# =============================================================================
+# Tagging Configuration
+# =============================================================================
+variable "environment" {
+  description = "Environment (e.g., dev, stg, prod)"
+  type        = string
+  default     = "dev"
+}
+
+variable "owner" {
+  description = "Resource owner"
+  type        = string
+  default     = "Sergei"
+}
+
+variable "project" {
+  description = "Project name"
+  type        = string
+  default     = "infra-segura"
+}
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
@@ -22,11 +55,15 @@ variable "azs" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
+# =============================================================================
+# Compute Configuration
+# =============================================================================
 variable "bastion_ssh_ingress_cidrs" {
   description = "List of CIDR blocks allowed to SSH into the bastion host"
   type        = list(string)
   default     = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
 }
+
 
 variable "ami_id" {
   description = "The AMI ID for the EC2 instances"
@@ -53,6 +90,7 @@ variable "app_user_data" {
               EOF
 }
 
+# [ ] TODO EXCLUIR 
 variable "env_tag" {
   description = "Environment tag for resources"
   type        = string
