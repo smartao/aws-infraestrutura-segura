@@ -89,10 +89,3 @@ variable "app_user_data" {
               echo "Pagina $HOSTNAME" | sudo tee /var/www/html/index.nginx-debian.html;
               EOF
 }
-
-# [ ] TODO EXCLUIR 
-variable "env_tag" {
-  description = "Environment tag for resources"
-  type        = string
-  default     = "development"
-}

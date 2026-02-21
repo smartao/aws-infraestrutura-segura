@@ -4,10 +4,9 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "main-vpc"
+    Name = "${var.environment}-main-vpc"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc
 
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
@@ -17,10 +16,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet-${count.index}"
+    Name = "${var.environment}-public-subnet-${count.index}"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
 
 resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidrs)
@@ -29,39 +27,34 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name = "private-subnet-${count.index}"
+    Name = "${var.environment}-private-subnet-${count.index}"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "main-igw"
+    Name = "${var.environment}-main-igw"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
 
 resource "aws_eip" "nat" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.main]
 
   tags = {
-    Name = "nat-eip"
+    Name = "${var.environment}-nat-eip"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id # Place NAT Gateway in the first public subnet
 
   tags = {
-    Name = "main-nat-gateway"
+    Name = "${var.environment}-main-nat-gateway"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway
-
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -71,10 +64,9 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "public-rt"
+    Name = "${var.environment}-public-rt"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
@@ -85,20 +77,18 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "private-rt"
+    Name = "${var.environment}-private-rt"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table
 
 resource "aws_route_table_association" "public" {
   count          = length(aws_subnet.public)
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association
+
 resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association

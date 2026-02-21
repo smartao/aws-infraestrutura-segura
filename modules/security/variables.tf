@@ -12,3 +12,8 @@ variable "bastion_ssh_ingress_cidrs" {
   description = "List of CIDR blocks allowed to SSH into the bastion host"
   type        = list(string)
 }
+
+variable "environment" {
+  description = "Environment tag for resources"
+  type        = string
+}

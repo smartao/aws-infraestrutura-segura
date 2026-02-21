@@ -48,7 +48,7 @@ variable "azs" {
   type        = list(string)
 }
 
-variable "env_tag" {
+variable "environment" {
   description = "Environment tag for resources"
   type        = string
 }

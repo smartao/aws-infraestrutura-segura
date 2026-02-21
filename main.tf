@@ -8,8 +8,7 @@ module "network" {
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
   azs                  = var.azs
-
-  environment = var.environment
+  environment          = var.environment
   #common_tags = local.common_tags
 }
 
@@ -22,6 +21,7 @@ module "security" {
   vpc_id                    = module.network.vpc_id
   vpc_cidr_block            = module.network.vpc_cidr_block
   bastion_ssh_ingress_cidrs = var.bastion_ssh_ingress_cidrs
+  environment               = var.environment
 }
 
 
@@ -41,7 +41,7 @@ module "compute" {
   instance_type      = var.instance_type
   app_user_data      = var.app_user_data
   azs                = var.azs
-  env_tag            = var.env_tag
+  environment        = var.environment
 
 
   depends_on = [

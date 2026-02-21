@@ -95,4 +95,4 @@ resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
   security_group_id        = aws_security_group.sg_app.id
   description              = "Allows SSH traffic from SG-BASTION"
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule
+# Reference: 

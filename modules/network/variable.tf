@@ -19,6 +19,7 @@ variable "azs" {
 }
 
 variable "environment" {
-  type = string
+  description = "Environment tag for resources"
+  type        = string
 }
 

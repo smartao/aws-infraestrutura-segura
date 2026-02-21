@@ -5,7 +5,7 @@ resource "aws_security_group" "sg_bastion" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "bastion-sg"
+    Name = "${var.environment}-bastion-sg"
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_security_group" "sg_alb" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "alb-sg"
+    Name = "${var.environment}-alb-sg"
   }
 }
 
@@ -27,7 +27,6 @@ resource "aws_security_group" "sg_app" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "app-sg"
+    Name = "${var.environment}-app-sg"
   }
 }
-# Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
