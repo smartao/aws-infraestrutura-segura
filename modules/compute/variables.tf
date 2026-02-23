@@ -48,7 +48,27 @@ variable "azs" {
   type        = list(string)
 }
 
+variable "public_key" {
+  description = "The public key for SSH access to EC2 instances"
+  type        = string
+}
+
+variable "app_port" {
+  description = "The port on which the application listens"
+  type        = number
+}
+
+variable "app_protocol" {
+  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
+  type        = string
+}
+
 variable "environment" {
   description = "Environment tag for resources"
   type        = string
+}
+
+variable "common_tags" {
+  description = "Common tags to be applied to all resources"
+  type        = map(string)
 }

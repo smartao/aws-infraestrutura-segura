@@ -58,6 +58,13 @@ variable "azs" {
 # =============================================================================
 # Compute Configuration
 # =============================================================================
+
+variable "public_key" {
+  description = "The public key for SSH access to EC2 instances"
+  type        = string
+  default     = "/home/sergei/.ssh/id_rsa.pub"
+
+}
 variable "bastion_ssh_ingress_cidrs" {
   description = "List of CIDR blocks allowed to SSH into the bastion host"
   type        = list(string)
@@ -75,6 +82,18 @@ variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string
   default     = "t3.micro"
+}
+
+variable "app_port" {
+  description = "The port on which the application listens"
+  type        = number
+  default     = 80
+}
+
+variable "app_protocol" {
+  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
+  type        = string
+  default     = "HTTP"
 }
 
 variable "app_user_data" {

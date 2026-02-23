@@ -9,7 +9,6 @@ module "network" {
   private_subnet_cidrs = var.private_subnet_cidrs
   azs                  = var.azs
   environment          = var.environment
-  #common_tags = local.common_tags
 }
 
 # =============================================================================
@@ -37,12 +36,15 @@ module "compute" {
   sg_alb_id          = module.security.sg_alb_id
   sg_app_id          = module.security.sg_app_id
   sg_bastion_id      = module.security.sg_bastion_id
+  public_key         = var.public_key
   ami_id             = var.ami_id
   instance_type      = var.instance_type
   app_user_data      = var.app_user_data
+  app_port           = var.app_port
+  app_protocol       = var.app_protocol
   azs                = var.azs
   environment        = var.environment
-
+  common_tags        = local.common_tags
 
   depends_on = [
     module.network
