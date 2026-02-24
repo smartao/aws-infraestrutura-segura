@@ -1,3 +1,22 @@
+/*# Search for most recent Ubuntu 24.04 LTS AMI in the specified region
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  owners = ["099720109477"] # Canonical
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+*/
+data "aws_ssm_parameter" "ubuntu" {
+  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
+}
+
 resource "aws_key_pair" "generated_key" {
   key_name   = "${var.environment}-Bastion-key"
   public_key = chomp(file(var.public_key))
@@ -5,7 +24,7 @@ resource "aws_key_pair" "generated_key" {
 
 # Bastion Host
 resource "aws_instance" "bastion" {
-  ami                         = var.ami_id
+  ami                         = data.aws_ssm_parameter.ubuntu.value
   instance_type               = var.instance_type
   subnet_id                   = var.public_subnet_ids[0] # Place Bastion in the first public subnet
   vpc_security_group_ids      = [var.sg_bastion_id]
@@ -59,10 +78,10 @@ resource "aws_lb_listener" "http_listener" {
 # Application EC2 Instances (via Launch Template and Auto Scaling Group)
 resource "aws_launch_template" "app_launch_template" {
   name_prefix            = "${var.environment}-app-lt"
-  image_id               = var.ami_id
+  image_id               = data.aws_ssm_parameter.ubuntu.value
   instance_type          = var.instance_type
   vpc_security_group_ids = [var.sg_app_id]
-  user_data              = base64encode(var.app_user_data)
+  user_data              = var.app_user_data
   key_name               = aws_key_pair.generated_key.key_name
 
   # Apply tags to instances launched from this template

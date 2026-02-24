@@ -37,9 +37,8 @@ module "compute" {
   sg_app_id          = module.security.sg_app_id
   sg_bastion_id      = module.security.sg_bastion_id
   public_key         = var.public_key
-  ami_id             = var.ami_id
   instance_type      = var.instance_type
-  app_user_data      = var.app_user_data
+  app_user_data      = base64encode(templatefile("${path.module}/scripts/nginx.sh", {}))
   app_port           = var.app_port
   app_protocol       = var.app_protocol
   azs                = var.azs
