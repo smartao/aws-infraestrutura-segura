@@ -13,6 +13,12 @@ data "aws_ami" "ubuntu" {
   }
 }
 */
+locals {
+  rendered_user_data = base64encode(
+    templatefile("${path.root}/scripts/${var.app_user_data}", {})
+  )
+}
+
 data "aws_ssm_parameter" "ubuntu" {
   name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
@@ -81,7 +87,7 @@ resource "aws_launch_template" "app_launch_template" {
   image_id               = data.aws_ssm_parameter.ubuntu.value
   instance_type          = var.instance_type
   vpc_security_group_ids = [var.sg_app_id]
-  user_data              = var.app_user_data
+  user_data              = local.rendered_user_data
   key_name               = aws_key_pair.generated_key.key_name
 
   # Apply tags to instances launched from this template

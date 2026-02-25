@@ -38,14 +38,11 @@ module "compute" {
   sg_bastion_id      = module.security.sg_bastion_id
   public_key         = var.public_key
   instance_type      = var.instance_type
-  app_user_data      = base64encode(templatefile("${path.module}/scripts/nginx.sh", {}))
+  app_user_data      = var.user_data
   app_port           = var.app_port
   app_protocol       = var.app_protocol
   azs                = var.azs
   environment        = var.environment
   common_tags        = local.common_tags
 
-  depends_on = [
-    module.network
-  ]
 }
