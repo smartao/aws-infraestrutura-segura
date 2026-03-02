@@ -4,7 +4,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${var.environment}-main-vpc"
+    Name = "${var.name_prefix}-main-vpc"
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.environment}-public-subnet-${count.index}"
+    Name = "${var.name_prefix}-public-subnet-${count.index}"
   }
 }
 
@@ -27,14 +27,14 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name = "${var.environment}-private-subnet-${count.index}"
+    Name = "${var.name_prefix}-private-subnet-${count.index}"
   }
 }
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.environment}-main-igw"
+    Name = "${var.name_prefix}-main-igw"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_eip" "nat" {
   depends_on = [aws_internet_gateway.main]
 
   tags = {
-    Name = "${var.environment}-nat-eip"
+    Name = "${var.name_prefix}-nat-eip"
   }
 }
 
@@ -52,7 +52,7 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = aws_subnet.public[0].id # Place NAT Gateway in the first public subnet
 
   tags = {
-    Name = "${var.environment}-main-nat-gateway"
+    Name = "${var.name_prefix}-main-nat-gateway"
   }
 }
 resource "aws_route_table" "public" {
@@ -64,7 +64,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.environment}-public-rt"
+    Name = "${var.name_prefix}-public-rt"
   }
 }
 
@@ -77,7 +77,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "${var.environment}-private-rt"
+    Name = "${var.name_prefix}-private-rt"
   }
 }
 

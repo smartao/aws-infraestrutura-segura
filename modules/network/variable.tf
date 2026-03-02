@@ -46,3 +46,13 @@ variable "environment" {
     error_message = "VALIDATION: Invalid environment. Allowed values: tst, dev, stage ou prod."
   }
 }
+
+variable "name_prefix" {
+  description = "Prefix for naming resources"
+  type        = string
+
+  validation {
+    condition     = length(var.name_prefix) <= 32
+    error_message = "VALIDATION: name_prefix must be <= 32 characters."
+  }
+}

@@ -34,24 +34,13 @@ resource "aws_security_group_rule" "allow_alb_to_internet" {
 
 resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
   type              = "ingress"
-  from_port         = 80
-  to_port           = 80
+  from_port         = var.app_port
+  to_port           = var.app_port
   protocol          = "tcp"
   cidr_blocks       = [var.vpc_cidr_block]
   security_group_id = aws_security_group.sg_alb.id
   description       = "Allow HTTP from internal network"
 }
-
-resource "aws_security_group_rule" "allow_https_from_vpc_to_alb" {
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = [var.vpc_cidr_block]
-  security_group_id = aws_security_group.sg_alb.id
-  description       = "Allow HTTPS from internal network"
-}
-
 
 # Rules for APP
 resource "aws_security_group_rule" "allow_app_to_internet" {
@@ -67,23 +56,14 @@ resource "aws_security_group_rule" "allow_app_to_internet" {
 
 resource "aws_security_group_rule" "allow_http_app_from_alb" {
   type                     = "ingress"
-  from_port                = 80 # Assuming application serves on port 80
-  to_port                  = 80
+  from_port                = var.app_port # Assuming application serves on port 80
+  to_port                  = var.app_port
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.sg_alb.id
   security_group_id        = aws_security_group.sg_app.id
   description              = "Allows HTTP traffic from SG-ALB"
 }
 
-resource "aws_security_group_rule" "allow_https_app_from_alb" {
-  type                     = "ingress"
-  from_port                = 443 # Assuming application serves on port 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.sg_alb.id
-  security_group_id        = aws_security_group.sg_app.id
-  description              = "Allows HTTPS traffic from SG-ALB"
-}
 
 # SG-APP allows SSH from SG-BASTION
 resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
@@ -95,4 +75,3 @@ resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
   security_group_id        = aws_security_group.sg_app.id
   description              = "Allows SSH traffic from SG-BASTION"
 }
-# Reference: 

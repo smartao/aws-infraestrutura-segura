@@ -28,6 +28,16 @@ variable "sg_bastion_id" {
   type        = string
 }
 
+variable "name_prefix" {
+  description = "Prefix for naming resources"
+  type        = string
+
+  validation {
+    condition     = length(var.name_prefix) <= 32
+    error_message = "VALIDATION: name_prefix must be <= 32 characters."
+  }
+}
+
 variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string

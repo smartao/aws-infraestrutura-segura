@@ -1,18 +1,3 @@
-/*# Search for most recent Ubuntu 24.04 LTS AMI in the specified region
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  owners = ["099720109477"] # Canonical
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-*/
 locals {
   rendered_user_data = base64encode(file("${path.module}/scripts/${var.app_user_data}"))
 }
@@ -22,7 +7,7 @@ data "aws_ssm_parameter" "ubuntu" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = "${var.environment}-Bastion-key"
+  key_name   = "${var.name_prefix}-Bastion-key"
   public_key = var.public_key
 }
 
@@ -36,14 +21,14 @@ resource "aws_instance" "bastion" {
   key_name                    = aws_key_pair.generated_key.key_name
 
   tags = {
-    Name = "${var.environment}-BastionHost"
+    Name = "${var.name_prefix}-BastionHost"
   }
 }
 
 
 # Application Load Balancer
 resource "aws_lb" "internal_alb" {
-  name               = "${var.environment}-internal-alb"
+  name               = "${var.name_prefix}-internal-alb"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [var.sg_alb_id]
@@ -51,7 +36,7 @@ resource "aws_lb" "internal_alb" {
 }
 
 resource "aws_lb_target_group" "app_target_group" {
-  name     = "${var.environment}-app-tg"
+  name     = "${var.name_prefix}-app-tg"
   port     = var.app_port
   protocol = var.app_protocol
   vpc_id   = var.vpc_id
@@ -81,7 +66,7 @@ resource "aws_lb_listener" "http_listener" {
 
 # Application EC2 Instances (via Launch Template and Auto Scaling Group)
 resource "aws_launch_template" "app_launch_template" {
-  name_prefix            = "${var.environment}-app-lt"
+  name_prefix            = "${var.name_prefix}-app-lt"
   image_id               = data.aws_ssm_parameter.ubuntu.value
   instance_type          = var.instance_type
   vpc_security_group_ids = [var.sg_app_id]
@@ -92,7 +77,7 @@ resource "aws_launch_template" "app_launch_template" {
   tags = merge(
     var.common_tags,
     {
-      Name = "${var.environment}-AppInstance"
+      Name = "${var.name_prefix}-AppInstance"
     }
   )
 
@@ -119,7 +104,7 @@ resource "aws_autoscaling_group" "app_asg" {
     for_each = merge(
       var.common_tags,
       {
-        Name = "${var.environment}-AppInstance"
+        Name = "${var.name_prefix}-AppInstance"
       }
     )
 
