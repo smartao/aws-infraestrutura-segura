@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "sergei-aplicacao-infraestrutura-segura"
-    key    = "projeto"
+    key    = "dev/infra-segura-dev"
     region = "us-east-1"
   }
 
@@ -11,7 +11,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-
 }
 
 # Configure the AWS Provider

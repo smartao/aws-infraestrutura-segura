@@ -2,7 +2,7 @@
 # Module: Network
 # =============================================================================
 module "network" {
-  source = "./modules/network"
+  source = "../../modules/network"
 
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidrs  = var.public_subnet_cidrs
@@ -15,7 +15,7 @@ module "network" {
 # Module: Security
 # =============================================================================
 module "security" {
-  source = "./modules/security"
+  source = "../../modules/security"
 
   vpc_id                    = module.network.vpc_id
   vpc_cidr_block            = module.network.vpc_cidr_block
@@ -28,7 +28,7 @@ module "security" {
 # Module: Compute
 # =============================================================================
 module "compute" {
-  source = "./modules/compute"
+  source = "../../modules/compute"
 
   vpc_id             = module.network.vpc_id
   private_subnet_ids = module.network.private_subnet_ids
@@ -36,7 +36,7 @@ module "compute" {
   sg_alb_id          = module.security.sg_alb_id
   sg_app_id          = module.security.sg_app_id
   sg_bastion_id      = module.security.sg_bastion_id
-  public_key         = var.public_key
+  public_key         = file(var.public_key)
   instance_type      = var.instance_type
   app_user_data      = var.user_data
   app_port           = var.app_port
@@ -44,5 +44,4 @@ module "compute" {
   azs                = var.azs
   environment        = var.environment
   common_tags        = local.common_tags
-
 }

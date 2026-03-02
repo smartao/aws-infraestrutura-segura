@@ -25,7 +25,7 @@ azs                  = ["us-west-1a", "us-west-1c"]
 # Module: Compute
 # =============================================================================
 bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
-public_key                = "/home/sergei/.ssh/id_rsa.pub"
+public_key                = file("/home/sergei/.ssh/id_rsa_teste.pub")
 instance_type             = "t3.micro"
 app_port                  = 80
 app_protocol              = "HTTP"

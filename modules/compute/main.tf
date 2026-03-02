@@ -14,9 +14,7 @@ data "aws_ami" "ubuntu" {
 }
 */
 locals {
-  rendered_user_data = base64encode(
-    templatefile("${path.root}/scripts/${var.app_user_data}", {})
-  )
+  rendered_user_data = base64encode(file("${path.module}/scripts/${var.app_user_data}"))
 }
 
 data "aws_ssm_parameter" "ubuntu" {
@@ -25,7 +23,7 @@ data "aws_ssm_parameter" "ubuntu" {
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "${var.environment}-Bastion-key"
-  public_key = chomp(file(var.public_key))
+  public_key = var.public_key
 }
 
 # Bastion Host
