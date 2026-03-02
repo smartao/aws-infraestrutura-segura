@@ -8,8 +8,7 @@ region = "us-east-1"
 # Module: Tagging
 # =============================================================================
 owner   = "Sergei"
-project = "infra-segura-dev"
-
+project = "infra-segura"
 
 # =============================================================================
 # Module: Network 
@@ -24,7 +23,7 @@ azs                  = ["us-east-1a", "us-east-1b"]
 # Module: Compute
 # =============================================================================
 bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
-public_key                = "/home/sergei/.ssh/id_rsa.pub"
+public_key                = "dev_key.pub"
 instance_type             = "t3.micro"
 app_port                  = 80
 app_protocol              = "HTTP"

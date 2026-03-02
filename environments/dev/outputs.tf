@@ -17,7 +17,7 @@ output "access_information" {
 ========== Infrastructure Access Information ==========
 
 🔐 Bastion SSH:
-ssh ubuntu@${module.compute.bastion_public_ip}
+ssh -i keys/${var.public_key} ubuntu@${module.compute.bastion_public_ip}
 
 🌍 Application URL:
 http://${module.compute.alb_dns_name}

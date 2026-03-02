@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "sergei-aplicacao-infraestrutura-segura"
-    key    = "tst/infra-segura-dev"
+    key    = "stage/infra-segura-dev"
     region = "us-east-1"
   }
 

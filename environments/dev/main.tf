@@ -9,6 +9,7 @@ module "network" {
   private_subnet_cidrs = var.private_subnet_cidrs
   azs                  = var.azs
   environment          = var.environment
+  name_prefix          = local.name_prefix
 }
 
 # =============================================================================
@@ -21,6 +22,9 @@ module "security" {
   vpc_cidr_block            = module.network.vpc_cidr_block
   bastion_ssh_ingress_cidrs = var.bastion_ssh_ingress_cidrs
   environment               = var.environment
+  app_port                  = var.app_port
+  app_protocol              = var.app_protocol
+  name_prefix               = local.name_prefix
 }
 
 
@@ -36,7 +40,8 @@ module "compute" {
   sg_alb_id          = module.security.sg_alb_id
   sg_app_id          = module.security.sg_app_id
   sg_bastion_id      = module.security.sg_bastion_id
-  public_key         = file(var.public_key)
+  name_prefix        = local.name_prefix
+  public_key         = file("${path.root}/keys/${var.public_key}")
   instance_type      = var.instance_type
   app_user_data      = var.user_data
   app_port           = var.app_port
