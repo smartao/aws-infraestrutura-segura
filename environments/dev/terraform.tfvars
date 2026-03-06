@@ -28,3 +28,6 @@ instance_type             = "t3.micro"
 app_port                  = 80
 app_protocol              = "HTTP"
 user_data                 = "user_data.sh"
+asg_desired_capacity      = 2
+asg_min_size              = 2
+asg_max_size              = 2

@@ -1,5 +1,6 @@
 locals {
-  rendered_user_data = base64encode(file("${path.module}/scripts/${var.app_user_data}"))
+  #rendered_user_data = base64encode(file("${path.module}/scripts/${var.app_user_data}"))
+  rendered_user_data = filebase64("${path.module}/scripts/${var.app_user_data}")
 }
 
 data "aws_ssm_parameter" "ubuntu" {
@@ -19,6 +20,18 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids      = [var.sg_bastion_id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
+
+  root_block_device {
+    volume_size           = var.disk_volume_size
+    volume_type           = var.disk_volume_type
+    encrypted             = var.disk_encrypted
+    delete_on_termination = var.disk_delete_on_termination
+
+    tags = {
+      Name      = "${var.name_prefix}-BastionHost-RootVolume"
+      ManagedBy = "Terraform"
+    }
+  }
 
   tags = {
     Name = "${var.name_prefix}-BastionHost"
@@ -81,15 +94,25 @@ resource "aws_launch_template" "app_launch_template" {
     }
   )
 
+  tag_specifications {
+    resource_type = "volume"
+
+    tags = merge(
+      var.common_tags,
+      {
+        Name = "${var.name_prefix}-AppVolume"
+      }
+    )
+  }
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "aws_autoscaling_group" "app_asg" {
-  desired_capacity    = 2
-  max_size            = 4
-  min_size            = 2
+  desired_capacity    = var.asg_desired_capacity
+  max_size            = var.asg_max_size
+  min_size            = var.asg_min_size
   vpc_zone_identifier = var.private_subnet_ids # Distribute across private subnets
 
   launch_template {

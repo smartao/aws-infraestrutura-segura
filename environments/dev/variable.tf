@@ -106,3 +106,18 @@ variable "user_data" {
   description = "The user data script to initialize the EC2 instances"
   type        = string
 }
+
+variable "asg_desired_capacity" {
+  description = "Quantidade desejada de instâncias no Auto Scaling Group"
+  type        = number
+}
+
+variable "asg_min_size" {
+  description = "Minimum number of instances in the ASG"
+  type        = number
+}
+
+variable "asg_max_size" {
+  description = "Maximum number of instances in the ASG"
+  type        = number
+}

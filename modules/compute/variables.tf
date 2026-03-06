@@ -41,11 +41,49 @@ variable "name_prefix" {
 variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string
-
+  default     = "t3.micro"
   validation {
     condition     = can(regex("^t3\\.", var.instance_type))
     error_message = "VALIDATION: Instance type must belong to the t3 family."
   }
+}
+
+
+variable "disk_volume_size" {
+  description = "The size of the EBS volume in GB"
+  type        = number
+  default     = 20
+
+  validation {
+    condition     = var.disk_volume_size >= 20 && var.disk_volume_size <= 16384
+    error_message = "VALIDATION: disk_volume_size must be between 20 and 16384 GB."
+  }
+}
+
+variable "disk_volume_type" {
+  description = "The type of the EBS volume"
+  type        = string
+  default     = "gp3"
+
+  validation {
+    condition = contains(
+      ["gp3", "gp2", "io1", "io2", "st1", "sc1"],
+      var.disk_volume_type
+    )
+    error_message = "VALIDATION: disk_volume_type must be: gp3, gp2, io1, io2, st1 or sc1."
+  }
+}
+
+variable "disk_encrypted" {
+  description = "Defines whether the EBS volume will be encrypted."
+  type        = bool
+  default     = true
+}
+
+variable "disk_delete_on_termination" {
+  description = "Defines whether the EBS volume will be deleted when the instance is terminated."
+  type        = bool
+  default     = true
 }
 
 variable "app_user_data" {
@@ -105,4 +143,41 @@ variable "environment" {
 variable "common_tags" {
   description = "Common tags to be applied to all resources"
   type        = map(string)
+}
+
+variable "asg_desired_capacity" {
+  description = "Quantidade desejada de instâncias no Auto Scaling Group"
+  type        = number
+  default     = 2
+
+  validation {
+    condition = (
+      var.asg_desired_capacity >= var.asg_min_size &&
+      var.asg_desired_capacity <= var.asg_max_size
+    )
+
+    error_message = "VALIDATION: asg_desired_capacity must be between asg_min_size and asg_max_size."
+  }
+}
+
+variable "asg_min_size" {
+  description = "Minimum number of instances in the ASG"
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.asg_min_size >= 1
+    error_message = "VALIDATION: asg_min_size must be at least 1."
+  }
+}
+
+variable "asg_max_size" {
+  description = "Maximum number of instances in the ASG"
+  type        = number
+  default     = 3
+
+  validation {
+    condition     = var.asg_max_size >= var.asg_min_size
+    error_message = "VALIDATION: asg_max_size must be greater than or equal to asg_min_size."
+  }
 }

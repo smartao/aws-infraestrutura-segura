@@ -30,6 +30,7 @@ resource "aws_subnet" "private" {
     Name = "${var.name_prefix}-private-subnet-${count.index}"
   }
 }
+
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
