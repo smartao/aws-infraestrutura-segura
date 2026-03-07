@@ -9,8 +9,9 @@ data "aws_ssm_parameter" "ubuntu" {
 
 resource "aws_key_pair" "generated_key" {
   key_name   = "${var.name_prefix}-Bastion-key"
-  public_key = var.public_key
+  public_key = var.ssh_public_key
 }
+
 
 # Bastion Host
 resource "aws_instance" "bastion" {
@@ -21,16 +22,9 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.generated_key.key_name
 
-  root_block_device {
-    volume_size           = var.disk_volume_size
-    volume_type           = var.disk_volume_type
-    encrypted             = var.disk_encrypted
-    delete_on_termination = var.disk_delete_on_termination
-
-    tags = {
-      Name      = "${var.name_prefix}-BastionHost-RootVolume"
-      ManagedBy = "Terraform"
-    }
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   tags = {
@@ -49,10 +43,11 @@ resource "aws_lb" "internal_alb" {
 }
 
 resource "aws_lb_target_group" "app_target_group" {
-  name     = "${var.name_prefix}-app-tg"
-  port     = var.app_port
-  protocol = var.app_protocol
-  vpc_id   = var.vpc_id
+  name        = "${var.name_prefix}-app-tg"
+  port        = var.app_port
+  protocol    = var.app_protocol
+  vpc_id      = var.vpc_id
+  target_type = "instance"
 
   health_check {
     path                = "/"
@@ -86,6 +81,21 @@ resource "aws_launch_template" "app_launch_template" {
   user_data              = local.rendered_user_data
   key_name               = aws_key_pair.generated_key.key_name
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size           = var.disk_volume_size
+      volume_type           = var.disk_volume_type
+      encrypted             = var.disk_encrypted
+      delete_on_termination = var.disk_delete_on_termination
+    }
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
   # Apply tags to instances launched from this template
   tags = merge(
     var.common_tags,
@@ -110,17 +120,21 @@ resource "aws_launch_template" "app_launch_template" {
 }
 
 resource "aws_autoscaling_group" "app_asg" {
-  desired_capacity    = var.asg_desired_capacity
-  max_size            = var.asg_max_size
-  min_size            = var.asg_min_size
-  vpc_zone_identifier = var.private_subnet_ids # Distribute across private subnets
-
+  desired_capacity          = var.asg_desired_capacity
+  max_size                  = var.asg_max_size
+  min_size                  = var.asg_min_size
+  vpc_zone_identifier       = var.private_subnet_ids # Distribute across private subnets
+  health_check_type         = "ELB"
+  health_check_grace_period = var.asg_health_check_grace_period
   launch_template {
     id      = aws_launch_template.app_launch_template.id
     version = "$Latest"
   }
 
   target_group_arns = [aws_lb_target_group.app_target_group.arn]
+  lifecycle {
+    create_before_destroy = true
+  }
 
   # Add tag dynamically to ASG instances
   dynamic "tag" {

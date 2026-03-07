@@ -101,12 +101,12 @@ variable "azs" {
   type        = list(string)
 }
 
-variable "public_key" {
+variable "ssh_public_key" {
   description = "The public key for SSH access to EC2 instances"
   type        = string
 
   validation {
-    condition     = can(regex("^ssh-(rsa|ed25519)\\s+[A-Za-z0-9+/=]+", var.public_key))
+    condition     = can(regex("^ssh-(rsa|ed25519)\\s+[A-Za-z0-9+/=]+", var.ssh_public_key))
     error_message = "VALIDATION: Invalid SSH public key format."
   }
 }
@@ -179,5 +179,15 @@ variable "asg_max_size" {
   validation {
     condition     = var.asg_max_size >= var.asg_min_size
     error_message = "VALIDATION: asg_max_size must be greater than or equal to asg_min_size."
+  }
+}
+
+variable "asg_health_check_grace_period" {
+  description = "Time (in seconds) that Auto Scaling waits before checking the health status of an instance after it enters the InService state"
+  type        = number
+  default     = 300
+  validation {
+    condition     = var.asg_health_check_grace_period >= 0 && var.asg_health_check_grace_period <= 3600
+    error_message = "VALIDATION: asg_health_check_grace_period must be between 0 and 3600 seconds."
   }
 }

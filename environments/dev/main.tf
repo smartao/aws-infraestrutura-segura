@@ -41,7 +41,7 @@ module "compute" {
   sg_app_id            = module.security.sg_app_id
   sg_bastion_id        = module.security.sg_bastion_id
   name_prefix          = local.name_prefix
-  public_key           = file("${path.root}/keys/${var.public_key}")
+  ssh_public_key       = file("${path.root}/keys/${var.ssh_public_key}")
   instance_type        = var.instance_type
   app_user_data        = var.user_data
   app_port             = var.app_port

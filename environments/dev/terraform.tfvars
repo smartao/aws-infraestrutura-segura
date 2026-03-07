@@ -23,11 +23,11 @@ azs                  = ["us-east-1a", "us-east-1b"]
 # Module: Compute
 # =============================================================================
 bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
-public_key                = "dev_key.pub"
+ssh_public_key            = "dev_key.pub"
 instance_type             = "t3.micro"
 app_port                  = 80
 app_protocol              = "HTTP"
 user_data                 = "user_data.sh"
 asg_desired_capacity      = 2
 asg_min_size              = 2
-asg_max_size              = 2
+asg_max_size              = 3

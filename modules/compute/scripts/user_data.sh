@@ -6,7 +6,7 @@ log() {
 }
 
 wait_for_internet() {
-  until ping -c 1 google.com; do
+  until ping -c 1 aws.amazon.com; do
     log "Waiting for internet..."
     sleep 5
   done
