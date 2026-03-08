@@ -34,6 +34,11 @@ variable "environment" {
   description = "Environment (e.g., dev, stg, prod)"
   type        = string
   default     = "dev"
+
+  validation {
+    condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
+    error_message = "VALIDATION: Invalid environment. Allowed values: tst, dev, stage ou prod."
+  }
 }
 
 variable "owner" {

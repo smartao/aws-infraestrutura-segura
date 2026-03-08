@@ -13,7 +13,7 @@ module "network" {
 }
 
 # =============================================================================
-# Module: Bation
+# Module: Bastion
 # =============================================================================
 module "bastion" {
   source = "../../modules/bastion"
@@ -27,24 +27,6 @@ module "bastion" {
   environment               = var.environment
 }
 
-
-# =============================================================================
-# Module: Security
-# =============================================================================
-module "security" {
-  source = "../../modules/security"
-
-  vpc_id         = module.network.vpc_id
-  vpc_cidr_block = module.network.vpc_cidr_block
-  bastion_sg_id  = module.bastion.bastion_sg_id
-  app_port       = var.app_port
-  app_protocol   = var.app_protocol
-  environment    = var.environment
-  name_prefix    = local.name_prefix
-
-}
-
-
 # =============================================================================
 # Module: ALB
 # =============================================================================
@@ -52,9 +34,9 @@ module "alb" {
   source = "../../modules/alb"
 
   vpc_id             = module.network.vpc_id
+  vpc_cidr_block     = module.network.vpc_cidr_block
   private_subnet_ids = module.network.private_subnet_ids
   public_subnet_ids  = module.network.public_subnet_ids
-  sg_alb_id          = module.security.sg_alb_id
   name_prefix        = local.name_prefix
   app_port           = var.app_port
   app_protocol       = var.app_protocol
@@ -73,10 +55,13 @@ module "app" {
 
   vpc_id               = module.network.vpc_id
   private_subnet_ids   = module.network.private_subnet_ids
-  sg_app_id            = module.security.sg_app_id
+  sg_alb_id            = module.alb.sg_alb_id
   app_target_group_arn = module.alb.app_target_group_arn
+  bastion_sg_id        = module.bastion.bastion_sg_id
   ssh_public_key       = file("${path.root}/keys/${var.ssh_public_key}")
   instance_type        = var.instance_type
+  app_port             = var.app_port
+  app_protocol         = var.app_protocol
   app_user_data        = var.user_data
   asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size

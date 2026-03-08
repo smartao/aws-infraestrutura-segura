@@ -3,6 +3,52 @@ locals {
   rendered_user_data = filebase64("${path.module}/scripts/${var.app_user_data}")
 }
 
+
+# SG - Security Group for Application Instances
+resource "aws_security_group" "sg_app" {
+  name        = "${var.name_prefix}-app-sg"
+  description = "Allow traffic to application instances from ALB and SSH from Bastion"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.name_prefix}-app-sg"
+  }
+}
+
+# Rules for APP
+resource "aws_security_group_rule" "allow_app_to_internet" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg_app.id
+  description       = "Allow all outbound traffic from APP"
+}
+
+
+resource "aws_security_group_rule" "allow_http_app_from_alb" {
+  type                     = "ingress"
+  from_port                = var.app_port
+  to_port                  = var.app_port
+  protocol                 = "tcp"
+  source_security_group_id = var.sg_alb_id
+  security_group_id        = aws_security_group.sg_app.id
+  description              = "Allows HTTP traffic from SG-ALB"
+}
+
+
+# SG-APP allows SSH from SG-BASTION
+resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = var.bastion_sg_id
+  security_group_id        = aws_security_group.sg_app.id
+  description              = "Allows SSH traffic from SG-BASTION"
+}
+
 data "aws_ssm_parameter" "ubuntu" {
   name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
@@ -18,10 +64,10 @@ resource "aws_launch_template" "app_launch_template" {
   name_prefix            = "${var.name_prefix}-app-lt"
   image_id               = data.aws_ssm_parameter.ubuntu.value
   instance_type          = var.instance_type
-  vpc_security_group_ids = [var.sg_app_id]
+  vpc_security_group_ids = [aws_security_group.sg_app.id]
   user_data              = local.rendered_user_data
   key_name               = aws_key_pair.generated_key.key_name
-
+  update_default_version = true
   block_device_mappings {
     device_name = "/dev/xvda"
 

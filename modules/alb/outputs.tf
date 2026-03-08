@@ -12,3 +12,8 @@ output "app_target_group_arn" {
   description = "The ARN of the ALB Target Group for the application"
   value       = aws_lb_target_group.app_target_group.arn
 }
+
+output "sg_alb_id" {
+  description = "The ID of the Security Group for the Application Load Balancer"
+  value       = aws_security_group.sg_alb.id
+}

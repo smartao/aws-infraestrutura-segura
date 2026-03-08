@@ -1,11 +1,43 @@
 
+# SG - Security Group for Application Load Balancer (ALB)
+resource "aws_security_group" "sg_alb" {
+  name        = "${var.name_prefix}-alb-sg"
+  description = "Allow HTTP/HTTPS traffic to ALB from internal network"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.name_prefix}-alb-sg"
+  }
+}
+
+# Rules for ALB
+resource "aws_security_group_rule" "allow_alb_to_internet" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg_alb.id
+  description       = "Allow all outbound traffic from ALB"
+}
+
+resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
+  type              = "ingress"
+  from_port         = var.app_port
+  to_port           = var.app_port
+  protocol          = "tcp"
+  cidr_blocks       = [var.vpc_cidr_block]
+  security_group_id = aws_security_group.sg_alb.id
+  description       = "Allow HTTP from internal network"
+}
+
 
 # Application Load Balancer
 resource "aws_lb" "internal_alb" {
   name               = "${var.name_prefix}-internal-alb"
   internal           = true
   load_balancer_type = "application"
-  security_groups    = [var.sg_alb_id]
+  security_groups    = [aws_security_group.sg_alb.id]
   subnets            = var.private_subnet_ids
 }
 

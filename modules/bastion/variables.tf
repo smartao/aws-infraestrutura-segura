@@ -11,11 +11,6 @@ variable "public_subnet_ids" {
 variable "environment" {
   description = "Environment tag for resources"
   type        = string
-
-  validation {
-    condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
-    error_message = "VALIDATION: Invalid environment. Allowed values: tst, dev, stage ou prod."
-  }
 }
 
 variable "bastion_ssh_ingress_cidrs" {

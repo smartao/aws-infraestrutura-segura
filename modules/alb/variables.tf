@@ -8,16 +8,6 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
-variable "public_subnet_ids" {
-  description = "List of public subnet IDs for the Bastion Host"
-  type        = list(string)
-}
-
-variable "sg_alb_id" {
-  description = "The ID of the Security Group for the Application Load Balancer"
-  type        = string
-}
-
 
 variable "name_prefix" {
   description = "Prefix for naming resources"
@@ -54,14 +44,19 @@ variable "app_protocol" {
   }
 }
 
-variable "environment" {
-  description = "Environment tag for resources"
+variable "vpc_cidr_block" {
+  description = "The CIDR block of the VPC for internal network access"
   type        = string
 
   validation {
-    condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
-    error_message = "VALIDATION: Invalid environment. Allowed values: tst, dev, stage ou prod."
+    condition     = can(cidrnetmask(var.vpc_cidr_block))
+    error_message = "VALIDATION: All vpc_cidr_block must be valid CIDRs."
   }
+}
+
+variable "environment" {
+  description = "Environment tag for resources"
+  type        = string
 }
 
 variable "common_tags" {

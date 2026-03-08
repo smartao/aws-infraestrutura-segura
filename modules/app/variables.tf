@@ -7,15 +7,39 @@ variable "private_subnet_ids" {
   description = "List of private subnet IDs for application instances and internal ALB"
   type        = list(string)
 }
-
-variable "sg_app_id" {
-  description = "The ID of the Security Group for the Application EC2 instances"
+variable "bastion_sg_id" {
+  description = "The ID of the Security Group for the Bastion Host"
   type        = string
 }
+
+variable "sg_alb_id" {
+  description = "The ID of the Security Group for the Application Load Balancer"
+  type        = string
+}
+
 
 variable "app_target_group_arn" {
   description = "The ARN of the ALB Target Group for the application"
   type        = string
+}
+
+variable "app_port" {
+  description = "The port on which the application listens"
+  type        = number
+  validation {
+    condition     = var.app_port > 0 && var.app_port < 65536
+    error_message = "VALIDATION: Application port must be between 1 and 65535."
+  }
+}
+
+variable "app_protocol" {
+  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
+  type        = string
+
+  validation {
+    condition     = contains(["HTTP", "HTTPS"], var.app_protocol)
+    error_message = "VALIDATION: Application protocol must be either HTTP or HTTPS."
+  }
 }
 
 variable "instance_type" {
