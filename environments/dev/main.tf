@@ -36,7 +36,6 @@ module "alb" {
   vpc_id             = module.network.vpc_id
   vpc_cidr_block     = module.network.vpc_cidr_block
   private_subnet_ids = module.network.private_subnet_ids
-  public_subnet_ids  = module.network.public_subnet_ids
   name_prefix        = local.name_prefix
   app_port           = var.app_port
   app_protocol       = var.app_protocol
