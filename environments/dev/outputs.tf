@@ -1,13 +1,13 @@
-output "alb_dns_name" {
+/*output "alb_dns_name" {
   description = "The DNS name of the internal Application Load Balancer"
-  value       = module.compute.alb_dns_name
+  value       = module.alb.alb_dns_name
 }
 
 output "bastion_public_ip" {
   description = "The public IP address of the Bastion Host. Use this to SSH into the bastion."
   value       = module.bastion.bastion_public_ip
 }
-
+*/
 output "access_information" {
   description = "Useful commands and URLs"
 
@@ -19,10 +19,10 @@ output "access_information" {
 ssh -o StrictHostKeyChecking=accept-new ubuntu@${module.bastion.bastion_public_ip}
 
 🌍 Application URL:
-http://${module.compute.alb_dns_name}
+http://${module.alb.alb_dns_name}
 
 🧪 Load balance test via bastion host
-while true; do curl ${module.compute.alb_dns_name} ; sleep 1; done
+while true; do curl ${module.alb.alb_dns_name} ; sleep 1; done
 
 =======================================================
 

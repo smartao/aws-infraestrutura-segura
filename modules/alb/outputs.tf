@@ -8,3 +8,7 @@ output "alb_arn" {
   value       = aws_lb.internal_alb.arn
 }
 
+output "app_target_group_arn" {
+  description = "The ARN of the ALB Target Group for the application"
+  value       = aws_lb_target_group.app_target_group.arn
+}

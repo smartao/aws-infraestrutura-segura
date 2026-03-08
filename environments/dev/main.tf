@@ -46,26 +46,41 @@ module "security" {
 
 
 # =============================================================================
-# Module: Compute
+# Module: ALB
 # =============================================================================
-module "compute" {
-  source = "../../modules/compute"
+module "alb" {
+  source = "../../modules/alb"
+
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+  public_subnet_ids  = module.network.public_subnet_ids
+  sg_alb_id          = module.security.sg_alb_id
+  name_prefix        = local.name_prefix
+  app_port           = var.app_port
+  app_protocol       = var.app_protocol
+  azs                = var.azs
+  environment        = var.environment
+  common_tags        = local.common_tags
+}
+
+
+# =============================================================================
+# Module: APP
+# =============================================================================
+
+module "app" {
+  source = "../../modules/app"
 
   vpc_id               = module.network.vpc_id
   private_subnet_ids   = module.network.private_subnet_ids
-  public_subnet_ids    = module.network.public_subnet_ids
-  sg_alb_id            = module.security.sg_alb_id
   sg_app_id            = module.security.sg_app_id
-  name_prefix          = local.name_prefix
+  app_target_group_arn = module.alb.app_target_group_arn
   ssh_public_key       = file("${path.root}/keys/${var.ssh_public_key}")
   instance_type        = var.instance_type
   app_user_data        = var.user_data
-  app_port             = var.app_port
-  app_protocol         = var.app_protocol
-  asg_desired_capacity = var.asg_desired_capacity
   asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size
-  azs                  = var.azs
-  environment          = var.environment
+  asg_desired_capacity = var.asg_desired_capacity
+  name_prefix          = local.name_prefix
   common_tags          = local.common_tags
 }
