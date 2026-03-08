@@ -13,18 +13,35 @@ module "network" {
 }
 
 # =============================================================================
+# Module: Bation
+# =============================================================================
+module "bastion" {
+  source = "../../modules/bastion"
+
+  vpc_id                    = module.network.vpc_id
+  public_subnet_ids         = module.network.public_subnet_ids
+  name_prefix               = local.name_prefix
+  ssh_public_key            = file("${path.root}/keys/${var.ssh_public_key}")
+  instance_type             = var.instance_type
+  bastion_ssh_ingress_cidrs = var.bastion_ssh_ingress_cidrs
+  environment               = var.environment
+}
+
+
+# =============================================================================
 # Module: Security
 # =============================================================================
 module "security" {
   source = "../../modules/security"
 
-  vpc_id                    = module.network.vpc_id
-  vpc_cidr_block            = module.network.vpc_cidr_block
-  bastion_ssh_ingress_cidrs = var.bastion_ssh_ingress_cidrs
-  environment               = var.environment
-  app_port                  = var.app_port
-  app_protocol              = var.app_protocol
-  name_prefix               = local.name_prefix
+  vpc_id         = module.network.vpc_id
+  vpc_cidr_block = module.network.vpc_cidr_block
+  bastion_sg_id  = module.bastion.bastion_sg_id
+  app_port       = var.app_port
+  app_protocol   = var.app_protocol
+  environment    = var.environment
+  name_prefix    = local.name_prefix
+
 }
 
 
@@ -39,7 +56,6 @@ module "compute" {
   public_subnet_ids    = module.network.public_subnet_ids
   sg_alb_id            = module.security.sg_alb_id
   sg_app_id            = module.security.sg_app_id
-  sg_bastion_id        = module.security.sg_bastion_id
   name_prefix          = local.name_prefix
   ssh_public_key       = file("${path.root}/keys/${var.ssh_public_key}")
   instance_type        = var.instance_type

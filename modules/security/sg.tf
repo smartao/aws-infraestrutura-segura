@@ -1,14 +1,3 @@
-# SG - Security Group for Bastion Host
-resource "aws_security_group" "sg_bastion" {
-  name        = "${var.name_prefix}-bastion-sg"
-  description = "Allow SSH access to Bastion Host"
-  vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "${var.name_prefix}-bastion-sg"
-  }
-}
-
 # SG - Security Group for Application Load Balancer (ALB)
 resource "aws_security_group" "sg_alb" {
   name        = "${var.name_prefix}-alb-sg"

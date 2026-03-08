@@ -23,11 +23,6 @@ variable "sg_app_id" {
   type        = string
 }
 
-variable "sg_bastion_id" {
-  description = "The ID of the Security Group for the Bastion Host"
-  type        = string
-}
-
 variable "name_prefix" {
   description = "Prefix for naming resources"
   type        = string

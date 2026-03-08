@@ -1,26 +1,3 @@
-
-# Rules for bastion host
-resource "aws_security_group_rule" "allow_bastion_to_internet" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sg_bastion.id
-  description       = "Allow all outbound traffic from Bastion Host"
-}
-
-resource "aws_security_group_rule" "allow_ssh_bastion_from_internet" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = var.bastion_ssh_ingress_cidrs
-  security_group_id = aws_security_group.sg_bastion.id
-  description       = "Allow SSH from trusted IPs"
-}
-
-
 # Rules for ALB
 resource "aws_security_group_rule" "allow_alb_to_internet" {
   type              = "egress"
@@ -71,7 +48,7 @@ resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
   from_port                = 22
   to_port                  = 22
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.sg_bastion.id
+  source_security_group_id = var.bastion_sg_id
   security_group_id        = aws_security_group.sg_app.id
   description              = "Allows SSH traffic from SG-BASTION"
 }

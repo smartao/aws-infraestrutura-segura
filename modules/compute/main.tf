@@ -8,30 +8,9 @@ data "aws_ssm_parameter" "ubuntu" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = "${var.name_prefix}-Bastion-key"
+  key_name   = "${var.name_prefix}-app-key"
   public_key = var.ssh_public_key
 }
-
-
-# Bastion Host
-resource "aws_instance" "bastion" {
-  ami                         = data.aws_ssm_parameter.ubuntu.value
-  instance_type               = var.instance_type
-  subnet_id                   = var.public_subnet_ids[0] # Place Bastion in the first public subnet
-  vpc_security_group_ids      = [var.sg_bastion_id]
-  associate_public_ip_address = true
-  key_name                    = aws_key_pair.generated_key.key_name
-
-  metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
-  }
-
-  tags = {
-    Name = "${var.name_prefix}-BastionHost"
-  }
-}
-
 
 # Application Load Balancer
 resource "aws_lb" "internal_alb" {
