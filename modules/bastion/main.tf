@@ -35,7 +35,7 @@ data "aws_ssm_parameter" "ubuntu" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = "${var.name_prefix}-Bastion-key"
+  key_name   = "${var.name_prefix}-bastion-key"
   public_key = var.ssh_public_key
 }
 

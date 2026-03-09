@@ -82,8 +82,8 @@ variable "private_subnet_cidrs" {
 # =============================================================================
 # Compute Configuration
 # =============================================================================
-variable "ssh_public_key" {
-  description = "The public key for SSH access to EC2 instances"
+variable "ssh_key_name" {
+  description = "Filename of the SSH public key stored in the keys directory"
   type        = string
 
 }
@@ -113,7 +113,7 @@ variable "user_data" {
 }
 
 variable "asg_desired_capacity" {
-  description = "Quantidade desejada de instâncias no Auto Scaling Group"
+  description = "Desired number of instances in the ASG"
   type        = number
 }
 

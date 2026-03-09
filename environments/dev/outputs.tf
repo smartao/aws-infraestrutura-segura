@@ -10,6 +10,7 @@ output "bastion_public_ip" {
 */
 output "access_information" {
   description = "Useful commands and URLs"
+  sensitive   = false
 
   value = <<EOT
 

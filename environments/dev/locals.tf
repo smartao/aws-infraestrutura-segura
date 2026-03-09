@@ -5,5 +5,6 @@ locals {
     Project     = var.project
     Environment = var.environment
   }
-  name_prefix = "${var.project}-${var.environment}"
+  name_prefix         = "${var.project}-${var.environment}"
+  ssh_public_key_path = "${path.root}/keys/${var.ssh_key_name}"
 }
