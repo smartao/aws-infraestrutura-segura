@@ -1,5 +1,5 @@
 # =============================================================================
-# Module: Network
+# Network Layer
 # =============================================================================
 module "network" {
   source = "../../modules/network"
@@ -17,7 +17,7 @@ module "network" {
 # Access Layer
 # =============================================================================
 module "bastion" {
-  source = "../../modules/bastion"
+  source = "git@github.com:smartao/terraform-aws-bastion.git?ref=v0.1.1"
 
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids

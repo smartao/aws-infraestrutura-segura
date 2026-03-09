@@ -87,6 +87,7 @@ variable "ssh_key_name" {
   type        = string
 
 }
+
 variable "bastion_ssh_ingress_cidrs" {
   description = "List of CIDR blocks allowed to SSH into the bastion host"
   type        = list(string)
