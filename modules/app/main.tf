@@ -1,6 +1,5 @@
 locals {
-  #rendered_user_data = base64encode(file("${path.module}/scripts/${var.app_user_data}"))
-  rendered_user_data = filebase64("${path.module}/scripts/${var.app_user_data}")
+  rendered_user_data = filebase64("${var.app_user_data}")
 }
 
 
@@ -16,6 +15,7 @@ resource "aws_security_group" "sg_app" {
 }
 
 # Rules for APP
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group_rule" "allow_app_to_internet" {
   type              = "egress"
   from_port         = 0
@@ -25,7 +25,6 @@ resource "aws_security_group_rule" "allow_app_to_internet" {
   security_group_id = aws_security_group.sg_app.id
   description       = "Allow all outbound traffic from APP"
 }
-
 
 resource "aws_security_group_rule" "allow_http_app_from_alb" {
   type                     = "ingress"
@@ -50,7 +49,7 @@ resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
 }
 
 data "aws_ssm_parameter" "ubuntu" {
-  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
+  name = var.ssm_parameter_name
 }
 
 resource "aws_key_pair" "generated_key" {

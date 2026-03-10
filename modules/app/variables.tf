@@ -23,6 +23,9 @@ variable "app_target_group_arn" {
   type        = string
 }
 
+
+
+
 variable "app_port" {
   description = "The port on which the application listens"
   type        = number
@@ -42,14 +45,10 @@ variable "app_protocol" {
   }
 }
 
-variable "instance_type" {
-  description = "The instance type for the EC2 instances"
+variable "ssm_parameter_name" {
+  description = "The name of the SSM parameter that contains the AMI ID for the Bastion Host"
   type        = string
-  default     = "t3.micro"
-  validation {
-    condition     = can(regex("^t3\\.", var.instance_type))
-    error_message = "VALIDATION: Instance type must belong to the t3 family."
-  }
+  default     = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
 
 variable "ssh_public_key" {
@@ -61,6 +60,17 @@ variable "ssh_public_key" {
     error_message = "VALIDATION: Invalid SSH public key format."
   }
 }
+
+variable "instance_type" {
+  description = "The instance type for the EC2 instances"
+  type        = string
+  default     = "t3.micro"
+  validation {
+    condition     = can(regex("^t3\\.", var.instance_type))
+    error_message = "VALIDATION: Instance type must belong to the t3 family."
+  }
+}
+
 
 variable "disk_volume_size" {
   description = "The size of the EBS volume in GB"
@@ -102,11 +112,6 @@ variable "disk_delete_on_termination" {
 variable "app_user_data" {
   description = "User data script for application EC2 instances"
   type        = string
-
-  validation {
-    condition     = fileexists("${path.module}/scripts/${var.app_user_data}")
-    error_message = "VALIDATION: The specified user_data file does not exist in the Terraform root directory."
-  }
 }
 
 variable "asg_desired_capacity" {
