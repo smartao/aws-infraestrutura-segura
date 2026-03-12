@@ -93,10 +93,17 @@ variable "bastion_ssh_ingress_cidrs" {
   type        = list(string)
 }
 
+variable "bastion_script" {
+  description = "The user data script to initialize the bastion host"
+  type        = string
+  default     = "bastion.sh"
+}
+
 variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string
 }
+
 
 variable "app_port" {
   description = "The port on which the application listens"
@@ -108,8 +115,8 @@ variable "app_protocol" {
   type        = string
 }
 
-variable "user_data" {
-  description = "The user data script to initialize the EC2 instances"
+variable "app_script" {
+  description = "The application script to initialize the EC2 instances"
   type        = string
 }
 
