@@ -44,6 +44,7 @@ terraform.rc
 
 ## Sergei additional ignores 
 .terraform.lock.hcl
+*.lock.hcl
 *.txt
 *.log
 AGENTS.md
