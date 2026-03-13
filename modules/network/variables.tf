@@ -16,6 +16,11 @@ variable "public_subnet_cidrs" {
     condition     = alltrue([for cidr in var.public_subnet_cidrs : can(cidrnetmask(cidr))])
     error_message = "VALIDATION: All public_subnet_cidrs must be valid CIDRs."
   }
+
+  validation {
+    condition     = length(var.public_subnet_cidrs) >= 2
+    error_message = "VALIDATION: At least two public subnet CIDRs must be specified."
+  }
 }
 
 variable "private_subnet_cidrs" {
@@ -26,6 +31,11 @@ variable "private_subnet_cidrs" {
     condition     = alltrue([for cidr in var.private_subnet_cidrs : can(cidrnetmask(cidr))])
     error_message = "VALIDATION: All private_subnet_cidrs must be valid CIDRs."
   }
+
+  validation {
+    condition     = length(var.private_subnet_cidrs) >= 2
+    error_message = "VALIDATION: At least two private subnet CIDRs must be specified."
+  }
 }
 
 variable "azs" {
@@ -35,11 +45,21 @@ variable "azs" {
     condition     = length(var.azs) >= 2
     error_message = "VALIDATION: At least two Availability Zones must be specified for high availability."
   }
+
+  validation {
+    condition     = length(distinct(var.azs)) == length(var.azs)
+    error_message = "VALIDATION: azs must not contain duplicate Availability Zones."
+  }
 }
 
 variable "environment" {
   description = "Environment tag for resources"
   type        = string
+
+  validation {
+    condition     = length(trimspace(var.environment)) > 0
+    error_message = "VALIDATION: environment must not be empty."
+  }
 }
 
 variable "name_prefix" {
