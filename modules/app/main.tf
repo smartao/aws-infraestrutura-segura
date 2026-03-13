@@ -1,7 +1,6 @@
 locals {
-  rendered_user_data = filebase64("${var.app_user_data}")
+  rendered_user_data = base64encode(var.app_user_data)
 }
-
 
 # SG - Security Group for Application Instances
 resource "aws_security_group" "sg_app" {

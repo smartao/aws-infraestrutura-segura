@@ -23,7 +23,7 @@ ssh -o StrictHostKeyChecking=accept-new ubuntu@${module.bastion.bastion_public_i
 http://${module.alb.alb_dns_name}
 
 🧪 Load balance test via bastion host
-while true; do curl ${module.alb.alb_dns_name} ; sleep 1; done
+while true; do curl -s ${module.alb.alb_dns_name} | grep Private ; sleep 1; done
 
 =======================================================
 

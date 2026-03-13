@@ -110,7 +110,7 @@ variable "disk_delete_on_termination" {
 }
 
 variable "app_user_data" {
-  description = "User data script for application EC2 instances"
+  description = "Rendered user data script for application EC2 instances"
   type        = string
 }
 
@@ -175,4 +175,3 @@ variable "common_tags" {
   description = "Common tags to be applied to all resources"
   type        = map(string)
 }
-

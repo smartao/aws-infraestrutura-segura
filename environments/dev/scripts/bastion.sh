@@ -17,7 +17,7 @@ install_packages() {
   apt update -y
 
   log "Installing packages"
-  DEBIAN_FRONTEND=noninteractive apt install -y curl vim htop neofetch tcpdump nmap iotop
+  DEBIAN_FRONTEND=noninteractive apt install -y curl vim htop neofetch tcpdump nmap iotop lynx
 }
 
 configure_bastion() {
@@ -30,7 +30,7 @@ HOSTNAME=$(hostname)
 IP=$(hostname -I | awk '{print $1}')
 UPTIME=$(uptime -p)
 DATE=$(date)
-ENVIRONMENT=${ENVIRONMENT:-production}
+ENVIRONMENT=${ENVIRONMENT:-dev}
 INSTANCE_ID=$(ec2metadata --instance-id)
 
 cat <<MSG
@@ -45,10 +45,10 @@ cat <<MSG
  Date       : $DATE
 
 ##################################################
-NOTICE
+SECURITY NOTICE
 
-This system is restricted to authorized users.
-All actions can be monitored and audited.
+ This system is restricted to authorized users.
+ All actions may be monitored and audited.
 
 ##################################################
 MSG

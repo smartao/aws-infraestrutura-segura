@@ -18,7 +18,7 @@ module "network" {
 # =============================================================================
 module "bastion" {
   source  = "smartao/bastion/aws"
-  version = "0.3.0"
+  version = "1.0.0"
 
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
@@ -72,7 +72,7 @@ module "app" {
   instance_type        = var.instance_type
   app_port             = var.app_port
   app_protocol         = var.app_protocol
-  app_user_data        = local.user_data_file_path
+  app_user_data        = local.app_user_data
   asg_min_size         = var.asg_min_size
   asg_max_size         = var.asg_max_size
   asg_desired_capacity = var.asg_desired_capacity

@@ -120,6 +120,12 @@ variable "app_script" {
   type        = string
 }
 
+variable "app_html_page" {
+  description = "The HTML template deployed by the application user data"
+  type        = string
+  default     = "index.html.tpl"
+}
+
 variable "asg_desired_capacity" {
   description = "Desired number of instances in the ASG"
   type        = number
