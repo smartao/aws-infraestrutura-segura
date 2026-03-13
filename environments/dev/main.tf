@@ -2,7 +2,8 @@
 # Network Layer
 # =============================================================================
 module "network" {
-  source = "../../modules/network"
+  source  = "smartao/secure-vpc/aws"
+  version = "1.0.0"
 
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidrs  = var.public_subnet_cidrs
