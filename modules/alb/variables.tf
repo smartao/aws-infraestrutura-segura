@@ -20,11 +20,6 @@ variable "name_prefix" {
 }
 
 
-variable "azs" {
-  description = "A list of availability zones to use"
-  type        = list(string)
-}
-
 variable "app_port" {
   description = "The port on which the application listens"
   type        = number
@@ -63,4 +58,3 @@ variable "common_tags" {
   description = "Common tags to be applied to all resources"
   type        = map(string)
 }
-

@@ -48,7 +48,6 @@ module "alb" {
 
   app_port     = var.app_port
   app_protocol = var.app_protocol
-  azs          = var.azs
 
   environment = var.environment
   name_prefix = local.name_prefix

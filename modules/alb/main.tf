@@ -5,9 +5,13 @@ resource "aws_security_group" "sg_alb" {
   description = "Allow HTTP/HTTPS traffic to ALB from internal network"
   vpc_id      = var.vpc_id
 
-  tags = {
-    Name = "${var.name_prefix}-alb-sg"
-  }
+  tags = merge(
+    var.common_tags,
+    {
+      Name        = "${var.name_prefix}-alb-sg"
+      Environment = var.environment
+    }
+  )
 }
 
 # Rules for ALB
@@ -39,6 +43,14 @@ resource "aws_lb" "internal_alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_alb.id]
   subnets            = var.private_subnet_ids
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name        = "${var.name_prefix}-internal-alb"
+      Environment = var.environment
+    }
+  )
 }
 
 resource "aws_lb_target_group" "app_target_group" {
@@ -57,6 +69,14 @@ resource "aws_lb_target_group" "app_target_group" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name        = "${var.name_prefix}-app-tg"
+      Environment = var.environment
+    }
+  )
 }
 
 
