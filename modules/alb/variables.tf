@@ -20,12 +20,21 @@ variable "name_prefix" {
 }
 
 
-variable "app_port" {
-  description = "The port on which the application listens"
+variable "listener_port" {
+  description = "The port on which the ALB listener accepts connections"
   type        = number
   validation {
-    condition     = var.app_port > 0 && var.app_port < 65536
-    error_message = "VALIDATION: Application port must be between 1 and 65535."
+    condition     = var.listener_port > 0 && var.listener_port < 65536
+    error_message = "VALIDATION: listener_port must be between 1 and 65535."
+  }
+}
+
+variable "target_group_port" {
+  description = "The port on which the application targets receive traffic"
+  type        = number
+  validation {
+    condition     = var.target_group_port > 0 && var.target_group_port < 65536
+    error_message = "VALIDATION: target_group_port must be between 1 and 65535."
   }
 }
 

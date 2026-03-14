@@ -46,8 +46,9 @@ module "alb" {
   vpc_cidr_block     = module.network.vpc_cidr_block
   private_subnet_ids = module.network.private_subnet_ids
 
-  app_port     = var.app_port
-  app_protocol = var.app_protocol
+  listener_port     = var.alb_listener_port
+  target_group_port = var.app_port
+  app_protocol      = var.app_protocol
 
   environment = var.environment
   name_prefix = local.name_prefix

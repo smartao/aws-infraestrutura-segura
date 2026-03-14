@@ -110,6 +110,11 @@ variable "app_port" {
   type        = number
 }
 
+variable "alb_listener_port" {
+  description = "The port on which the internal ALB listens"
+  type        = number
+}
+
 variable "app_protocol" {
   description = "The protocol used by the application (e.g., HTTP, HTTPS)"
   type        = string

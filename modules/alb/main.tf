@@ -27,8 +27,8 @@ resource "aws_security_group_rule" "allow_alb_to_internet" {
 
 resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
   type              = "ingress"
-  from_port         = var.app_port
-  to_port           = var.app_port
+  from_port         = var.listener_port
+  to_port           = var.listener_port
   protocol          = "tcp"
   cidr_blocks       = [var.vpc_cidr_block]
   security_group_id = aws_security_group.sg_alb.id
@@ -55,7 +55,7 @@ resource "aws_lb" "internal_alb" {
 
 resource "aws_lb_target_group" "app_target_group" {
   name        = "${var.name_prefix}-app-tg"
-  port        = var.app_port
+  port        = var.target_group_port
   protocol    = var.app_protocol
   vpc_id      = var.vpc_id
   target_type = "instance"
@@ -82,7 +82,7 @@ resource "aws_lb_target_group" "app_target_group" {
 
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
-  port              = var.app_port
+  port              = var.listener_port
   protocol          = var.app_protocol
 
   default_action {
