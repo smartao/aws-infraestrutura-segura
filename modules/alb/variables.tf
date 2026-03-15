@@ -48,6 +48,72 @@ variable "app_protocol" {
   }
 }
 
+variable "health_check_path" {
+  description = "The destination for the health check request"
+  type        = string
+  default     = "/"
+
+  validation {
+    condition     = can(regex("^/", var.health_check_path))
+    error_message = "VALIDATION: health_check_path must start with '/'."
+  }
+}
+
+variable "health_check_matcher" {
+  description = "The HTTP codes to use when checking for a successful response"
+  type        = string
+  default     = "200"
+
+  validation {
+    condition     = can(regex("^[0-9,-]+$", var.health_check_matcher))
+    error_message = "VALIDATION: health_check_matcher must contain only digits, commas, and hyphens."
+  }
+}
+
+variable "health_check_interval" {
+  description = "Approximate amount of time, in seconds, between health checks"
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.health_check_interval >= 5 && var.health_check_interval <= 300
+    error_message = "VALIDATION: health_check_interval must be between 5 and 300 seconds."
+  }
+}
+
+variable "health_check_timeout" {
+  description = "Amount of time, in seconds, during which no response means a failed health check"
+  type        = number
+  default     = 5
+
+  validation {
+    condition     = var.health_check_timeout >= 2 && var.health_check_timeout <= 120
+    error_message = "VALIDATION: health_check_timeout must be between 2 and 120 seconds."
+  }
+}
+
+variable "healthy_threshold" {
+  description = "Number of consecutive successful health checks required before considering a target healthy"
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.healthy_threshold >= 2 && var.healthy_threshold <= 10
+    error_message = "VALIDATION: healthy_threshold must be between 2 and 10."
+  }
+}
+
+variable "unhealthy_threshold" {
+  description = "Number of consecutive failed health checks required before considering a target unhealthy"
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.unhealthy_threshold >= 2 && var.unhealthy_threshold <= 10
+    error_message = "VALIDATION: unhealthy_threshold must be between 2 and 10."
+  }
+}
+
 variable "vpc_cidr_block" {
   description = "The CIDR block of the VPC for internal network access"
   type        = string

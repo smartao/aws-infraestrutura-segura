@@ -61,13 +61,13 @@ resource "aws_lb_target_group" "app_target_group" {
   target_type = "instance"
 
   health_check {
-    path                = "/"
+    path                = var.health_check_path
     protocol            = var.app_protocol
-    matcher             = "200"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
+    matcher             = var.health_check_matcher
+    interval            = var.health_check_interval
+    timeout             = var.health_check_timeout
+    healthy_threshold   = var.healthy_threshold
+    unhealthy_threshold = var.unhealthy_threshold
   }
 
   tags = merge(
