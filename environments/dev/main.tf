@@ -19,7 +19,7 @@ module "network" {
 # =============================================================================
 module "bastion" {
   source  = "smartao/bastion/aws"
-  version = "1.0.0"
+  version = "2.0.0"
 
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
