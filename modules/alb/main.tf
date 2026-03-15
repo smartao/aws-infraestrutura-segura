@@ -80,7 +80,7 @@ resource "aws_lb_target_group" "app_target_group" {
 }
 
 
-resource "aws_lb_listener" "http_listener" {
+resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = var.listener_port
   protocol          = var.app_protocol
