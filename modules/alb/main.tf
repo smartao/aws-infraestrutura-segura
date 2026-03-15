@@ -60,13 +60,13 @@ resource "aws_lb" "internal_alb" {
 resource "aws_lb_target_group" "app_target_group" {
   name        = "${var.name_prefix}-app-tg"
   port        = var.target_group_port
-  protocol    = var.app_protocol
+  protocol    = var.target_group_protocol
   vpc_id      = var.vpc_id
   target_type = "instance"
 
   health_check {
     path                = var.health_check_path
-    protocol            = var.app_protocol
+    protocol            = var.target_group_protocol
     matcher             = var.health_check_matcher
     interval            = var.health_check_interval
     timeout             = var.health_check_timeout
@@ -94,7 +94,7 @@ resource "aws_lb_target_group" "app_target_group" {
 resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = var.listener_port
-  protocol          = var.app_protocol
+  protocol          = var.listener_protocol
 
   default_action {
     type             = "forward"

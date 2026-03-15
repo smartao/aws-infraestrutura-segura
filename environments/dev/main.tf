@@ -48,7 +48,8 @@ module "alb" {
 
   listener_port         = var.alb_listener_port
   target_group_port     = var.app_port
-  app_protocol          = var.app_protocol
+  listener_protocol     = var.alb_listener_protocol
+  target_group_protocol = var.app_protocol
   health_check_path     = var.health_check_path
   health_check_matcher  = var.health_check_matcher
   health_check_interval = var.health_check_interval

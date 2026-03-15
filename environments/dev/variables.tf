@@ -115,6 +115,12 @@ variable "alb_listener_port" {
   type        = number
 }
 
+variable "alb_listener_protocol" {
+  description = "The protocol used by the internal ALB listener"
+  type        = string
+  default     = "HTTP"
+}
+
 variable "app_protocol" {
   description = "The protocol used by the application (e.g., HTTP, HTTPS)"
   type        = string

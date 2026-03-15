@@ -43,13 +43,23 @@ variable "target_group_port" {
   }
 }
 
-variable "app_protocol" {
-  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
+variable "listener_protocol" {
+  description = "The protocol used by the ALB listener (e.g., HTTP, HTTPS)"
   type        = string
 
   validation {
-    condition     = contains(["HTTP", "HTTPS"], var.app_protocol)
-    error_message = "VALIDATION: Application protocol must be either HTTP or HTTPS."
+    condition     = contains(["HTTP", "HTTPS"], var.listener_protocol)
+    error_message = "VALIDATION: listener_protocol must be either HTTP or HTTPS."
+  }
+}
+
+variable "target_group_protocol" {
+  description = "The protocol used by the ALB target group and health checks (e.g., HTTP, HTTPS)"
+  type        = string
+
+  validation {
+    condition     = contains(["HTTP", "HTTPS"], var.target_group_protocol)
+    error_message = "VALIDATION: target_group_protocol must be either HTTP or HTTPS."
   }
 }
 

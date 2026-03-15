@@ -26,6 +26,7 @@ bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restric
 ssh_key_name              = "dev_key.pub"
 instance_type             = "t3.micro"
 alb_listener_port         = 80
+alb_listener_protocol     = "HTTP"
 app_port                  = 80
 app_protocol              = "HTTP"
 health_check_path         = "/"
