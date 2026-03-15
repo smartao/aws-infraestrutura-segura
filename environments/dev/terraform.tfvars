@@ -2,6 +2,7 @@
 # Module: Global
 # =============================================================================
 region = "us-east-1"
+azs    = ["us-east-1a", "us-east-1b"]
 
 
 # =============================================================================
@@ -11,34 +12,48 @@ owner   = "Sergei"
 project = "infra-segura"
 
 # =============================================================================
-# Module: Network 
+# Module: Network
 # =============================================================================
 vpc_cidr             = "10.0.0.0/16"
 public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
 private_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24"]
-azs                  = ["us-east-1a", "us-east-1b"]
 
 
 # =============================================================================
-# Module: Compute
+# Module: Bastion
 # =============================================================================
 bastion_ssh_ingress_cidrs       = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
 ssh_key_name                    = "dev_key.pub"
-instance_type                   = "t3.micro"
+
+
+# =============================================================================
+# Module: ALB
+# =============================================================================
 alb_listener_port               = 80
 alb_listener_protocol           = "HTTP"
 alb_allowed_ingress_cidr_blocks = ["10.0.0.0/16"]
 alb_allowed_egress_cidr_blocks  = ["10.0.0.0/16"]
-app_port                        = 80
-app_protocol                    = "HTTP"
 health_check_path               = "/"
 health_check_matcher            = "200"
 health_check_interval           = 30
 health_check_timeout            = 5
 healthy_threshold               = 2
 unhealthy_threshold             = 2
+
+
+# =============================================================================
+# Module: App
+# =============================================================================
+instance_type = "t3.micro"
+app_port      = 80
+app_protocol  = "HTTP"
 app_script                      = "app.sh.tpl"
 app_html_page                   = "index.html.tpl"
+
+
+# =============================================================================
+# Module: Auto Scaling
+# =============================================================================
 asg_desired_capacity            = 2
 asg_min_size                    = 2
 asg_max_size                    = 3
