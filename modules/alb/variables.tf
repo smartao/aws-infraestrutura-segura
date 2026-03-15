@@ -3,6 +3,23 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "create_security_group" {
+  description = "Whether the module should create and manage a dedicated security group for the ALB"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_ids" {
+  description = "Additional security group IDs to attach to the ALB, or the full list when create_security_group is false"
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition     = var.create_security_group || length(var.security_group_ids) > 0
+    error_message = "VALIDATION: security_group_ids must contain at least one security group when create_security_group is false."
+  }
+}
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for application instances and internal ALB"
   type        = list(string)
@@ -159,13 +176,31 @@ variable "enable_http2" {
 }
 
 variable "vpc_cidr_block" {
-  description = "The CIDR block of the VPC for internal network access"
+  description = "The VPC CIDR block used as a fallback when explicit ALB security group CIDR rules are not provided"
   type        = string
 
   validation {
     condition     = can(cidrnetmask(var.vpc_cidr_block))
     error_message = "VALIDATION: All vpc_cidr_block must be valid CIDRs."
   }
+}
+
+variable "allowed_ingress_cidr_blocks" {
+  description = "CIDR blocks allowed to reach the ALB listener. Defaults to the VPC CIDR when empty."
+  type        = list(string)
+  default     = []
+}
+
+variable "allowed_ingress_security_group_ids" {
+  description = "Security group IDs allowed to reach the ALB listener"
+  type        = list(string)
+  default     = []
+}
+
+variable "allowed_egress_cidr_blocks" {
+  description = "CIDR blocks the ALB is allowed to reach on the target group port. Defaults to the VPC CIDR when empty."
+  type        = list(string)
+  default     = []
 }
 
 variable "environment" {

@@ -121,6 +121,18 @@ variable "alb_listener_protocol" {
   default     = "HTTP"
 }
 
+variable "alb_allowed_ingress_cidr_blocks" {
+  description = "Trusted CIDR blocks allowed to access the internal ALB listener"
+  type        = list(string)
+  default     = []
+}
+
+variable "alb_allowed_egress_cidr_blocks" {
+  description = "CIDR blocks the internal ALB can reach on the target group port"
+  type        = list(string)
+  default     = []
+}
+
 variable "app_protocol" {
   description = "The protocol used by the application (e.g., HTTP, HTTPS)"
   type        = string

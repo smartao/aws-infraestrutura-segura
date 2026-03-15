@@ -46,16 +46,18 @@ module "alb" {
   vpc_cidr_block     = module.network.vpc_cidr_block
   private_subnet_ids = module.network.private_subnet_ids
 
-  listener_port         = var.alb_listener_port
-  target_group_port     = var.app_port
-  listener_protocol     = var.alb_listener_protocol
-  target_group_protocol = var.app_protocol
-  health_check_path     = var.health_check_path
-  health_check_matcher  = var.health_check_matcher
-  health_check_interval = var.health_check_interval
-  health_check_timeout  = var.health_check_timeout
-  healthy_threshold     = var.healthy_threshold
-  unhealthy_threshold   = var.unhealthy_threshold
+  allowed_ingress_cidr_blocks = var.alb_allowed_ingress_cidr_blocks
+  allowed_egress_cidr_blocks  = var.alb_allowed_egress_cidr_blocks
+  listener_port               = var.alb_listener_port
+  target_group_port           = var.app_port
+  listener_protocol           = var.alb_listener_protocol
+  target_group_protocol       = var.app_protocol
+  health_check_path           = var.health_check_path
+  health_check_matcher        = var.health_check_matcher
+  health_check_interval       = var.health_check_interval
+  health_check_timeout        = var.health_check_timeout
+  healthy_threshold           = var.healthy_threshold
+  unhealthy_threshold         = var.unhealthy_threshold
 
   environment = var.environment
   name_prefix = local.name_prefix

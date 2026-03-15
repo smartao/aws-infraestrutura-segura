@@ -15,5 +15,5 @@ output "app_target_group_arn" {
 
 output "sg_alb_id" {
   description = "The ID of the Security Group for the Application Load Balancer"
-  value       = aws_security_group.sg_alb.id
+  value       = var.create_security_group ? aws_security_group.sg_alb[0].id : var.security_group_ids[0]
 }

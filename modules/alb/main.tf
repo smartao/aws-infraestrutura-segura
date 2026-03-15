@@ -1,6 +1,13 @@
 
+locals {
+  alb_ingress_cidr_blocks = length(var.allowed_ingress_cidr_blocks) > 0 ? var.allowed_ingress_cidr_blocks : [var.vpc_cidr_block]
+  alb_egress_cidr_blocks  = length(var.allowed_egress_cidr_blocks) > 0 ? var.allowed_egress_cidr_blocks : [var.vpc_cidr_block]
+  alb_security_group_ids  = var.create_security_group ? concat([aws_security_group.sg_alb[0].id], var.security_group_ids) : var.security_group_ids
+}
+
 # SG - Security Group for Application Load Balancer (ALB)
 resource "aws_security_group" "sg_alb" {
+  count       = var.create_security_group ? 1 : 0
   name        = "${var.name_prefix}-alb-sg"
   description = "Allow HTTP/HTTPS traffic to ALB from internal network"
   vpc_id      = var.vpc_id
@@ -16,32 +23,44 @@ resource "aws_security_group" "sg_alb" {
 
 # Rules for ALB
 resource "aws_security_group_rule" "allow_alb_to_app_targets" {
+  for_each          = var.create_security_group ? toset(local.alb_egress_cidr_blocks) : toset([])
   type              = "egress"
   from_port         = var.target_group_port
   to_port           = var.target_group_port
   protocol          = "tcp"
-  cidr_blocks       = [var.vpc_cidr_block]
-  security_group_id = aws_security_group.sg_alb.id
+  cidr_blocks       = [each.value]
+  security_group_id = aws_security_group.sg_alb[0].id
   description       = "Allow ALB outbound traffic only to application targets inside the VPC"
 }
 
-resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
+resource "aws_security_group_rule" "allow_http_from_cidrs_to_alb" {
+  for_each          = var.create_security_group ? toset(local.alb_ingress_cidr_blocks) : toset([])
   type              = "ingress"
   from_port         = var.listener_port
   to_port           = var.listener_port
   protocol          = "tcp"
-  cidr_blocks       = [var.vpc_cidr_block]
-  security_group_id = aws_security_group.sg_alb.id
+  cidr_blocks       = [each.value]
+  security_group_id = aws_security_group.sg_alb[0].id
   description       = "Allow HTTP from internal network"
 }
 
+resource "aws_security_group_rule" "allow_http_from_sgs_to_alb" {
+  for_each                 = var.create_security_group ? toset(var.allowed_ingress_security_group_ids) : toset([])
+  type                     = "ingress"
+  from_port                = var.listener_port
+  to_port                  = var.listener_port
+  protocol                 = "tcp"
+  source_security_group_id = each.value
+  security_group_id        = aws_security_group.sg_alb[0].id
+  description              = "Allow ALB access from trusted security groups"
+}
 
 # Application Load Balancer
 resource "aws_lb" "internal_alb" {
   name                       = "${var.name_prefix}-internal-alb"
   internal                   = true
   load_balancer_type         = "application"
-  security_groups            = [aws_security_group.sg_alb.id]
+  security_groups            = local.alb_security_group_ids
   subnets                    = var.private_subnet_ids
   idle_timeout               = var.alb_idle_timeout
   enable_deletion_protection = var.enable_deletion_protection
@@ -78,6 +97,10 @@ resource "aws_lb_target_group" "app_target_group" {
     precondition {
       condition     = var.health_check_timeout < var.health_check_interval
       error_message = "VALIDATION: health_check_timeout must be lower than health_check_interval."
+    }
+    precondition {
+      condition     = length(local.alb_security_group_ids) > 0
+      error_message = "VALIDATION: At least one security group must be attached to the ALB."
     }
   }
 
