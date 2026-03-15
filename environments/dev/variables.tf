@@ -1,5 +1,5 @@
 # =============================================================================
-# Global Configuration
+# Module: Global
 # =============================================================================
 variable "region" {
   description = "AWS region"
@@ -27,9 +27,9 @@ variable "azs" {
   }
 }
 
-# =============================================================================
-## Tagging Configuration
-# =============================================================================
+
+# Tagging Conventions
+
 variable "environment" {
   description = "Environment (e.g., dev, stg, prod)"
   type        = string
@@ -62,7 +62,7 @@ variable "project" {
 
 
 # =============================================================================
-# Network Configuration
+# Module: Network
 # =============================================================================
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
@@ -80,17 +80,16 @@ variable "private_subnet_cidrs" {
 }
 
 # =============================================================================
-# Compute Configuration
+# Module: Bastion
 # =============================================================================
-variable "ssh_key_name" {
-  description = "Filename of the SSH public key stored in the keys directory"
-  type        = string
-
-}
-
 variable "bastion_ssh_ingress_cidrs" {
   description = "List of CIDR blocks allowed to SSH into the bastion host"
   type        = list(string)
+}
+
+variable "ssh_key_name" {
+  description = "Filename of the SSH public key stored in the keys directory"
+  type        = string
 }
 
 variable "bastion_script" {
@@ -99,17 +98,9 @@ variable "bastion_script" {
   default     = "bastion.sh"
 }
 
-variable "instance_type" {
-  description = "The instance type for the EC2 instances"
-  type        = string
-}
-
-
-variable "app_port" {
-  description = "The port on which the application listens"
-  type        = number
-}
-
+# =============================================================================
+# Module: ALB
+# =============================================================================
 variable "alb_listener_port" {
   description = "The port on which the internal ALB listens"
   type        = number
@@ -131,11 +122,6 @@ variable "alb_allowed_egress_cidr_blocks" {
   description = "CIDR blocks the internal ALB can reach on the target group port"
   type        = list(string)
   default     = []
-}
-
-variable "app_protocol" {
-  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
-  type        = string
 }
 
 variable "health_check_path" {
@@ -174,6 +160,24 @@ variable "unhealthy_threshold" {
   default     = 2
 }
 
+# =============================================================================
+# Module: App
+# =============================================================================
+variable "instance_type" {
+  description = "The instance type for the EC2 instances"
+  type        = string
+}
+
+variable "app_port" {
+  description = "The port on which the application listens"
+  type        = number
+}
+
+variable "app_protocol" {
+  description = "The protocol used by the application (e.g., HTTP, HTTPS)"
+  type        = string
+}
+
 variable "app_script" {
   description = "The application script to initialize the EC2 instances"
   type        = string
@@ -185,6 +189,9 @@ variable "app_html_page" {
   default     = "index.html.tpl"
 }
 
+# =============================================================================
+# Module: Auto Scaling
+# =============================================================================
 variable "asg_desired_capacity" {
   description = "Desired number of instances in the ASG"
   type        = number
