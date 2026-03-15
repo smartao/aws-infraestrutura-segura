@@ -1,15 +1,11 @@
 # =============================================================================
 # Module: Global
 # =============================================================================
-region = "us-east-1"
-azs    = ["us-east-1a", "us-east-1b"]
-
-
-# =============================================================================
-# Module: Tagging
-# =============================================================================
+region  = "us-east-1"
+azs     = ["us-east-1a", "us-east-1b"]
 owner   = "Sergei"
 project = "infra-segura"
+
 
 # =============================================================================
 # Module: Network
@@ -22,8 +18,8 @@ private_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24"]
 # =============================================================================
 # Module: Bastion
 # =============================================================================
-bastion_ssh_ingress_cidrs       = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
-ssh_key_name                    = "dev_key.pub"
+bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
+ssh_key_name              = "dev_key.pub"
 
 
 # =============================================================================
@@ -47,13 +43,13 @@ unhealthy_threshold             = 2
 instance_type = "t3.micro"
 app_port      = 80
 app_protocol  = "HTTP"
-app_script                      = "app.sh.tpl"
-app_html_page                   = "index.html.tpl"
+app_script    = "app.sh.tpl"
+app_html_page = "index.html.tpl"
 
 
 # =============================================================================
 # Module: Auto Scaling
 # =============================================================================
-asg_desired_capacity            = 2
-asg_min_size                    = 2
-asg_max_size                    = 3
+asg_desired_capacity = 2
+asg_min_size         = 2
+asg_max_size         = 3
