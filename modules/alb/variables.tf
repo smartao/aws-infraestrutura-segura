@@ -6,6 +6,11 @@ variable "vpc_id" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for application instances and internal ALB"
   type        = list(string)
+
+  validation {
+    condition     = length(var.private_subnet_ids) >= 2
+    error_message = "VALIDATION: private_subnet_ids must contain at least two private subnets in different Availability Zones."
+  }
 }
 
 
@@ -112,6 +117,35 @@ variable "unhealthy_threshold" {
     condition     = var.unhealthy_threshold >= 2 && var.unhealthy_threshold <= 10
     error_message = "VALIDATION: unhealthy_threshold must be between 2 and 10."
   }
+}
+
+variable "alb_idle_timeout" {
+  description = "Time in seconds that the connection is allowed to be idle"
+  type        = number
+  default     = 60
+
+  validation {
+    condition     = var.alb_idle_timeout >= 1 && var.alb_idle_timeout <= 4000
+    error_message = "VALIDATION: alb_idle_timeout must be between 1 and 4000 seconds."
+  }
+}
+
+variable "enable_deletion_protection" {
+  description = "Defines whether deletion protection is enabled on the ALB"
+  type        = bool
+  default     = false
+}
+
+variable "drop_invalid_header_fields" {
+  description = "Indicates whether HTTP headers with invalid names are removed by the ALB"
+  type        = bool
+  default     = true
+}
+
+variable "enable_http2" {
+  description = "Defines whether HTTP/2 is enabled on the ALB"
+  type        = bool
+  default     = true
 }
 
 variable "vpc_cidr_block" {
