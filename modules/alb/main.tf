@@ -15,14 +15,14 @@ resource "aws_security_group" "sg_alb" {
 }
 
 # Rules for ALB
-resource "aws_security_group_rule" "allow_alb_to_internet" {
+resource "aws_security_group_rule" "allow_alb_to_app_targets" {
   type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = var.target_group_port
+  to_port           = var.target_group_port
+  protocol          = "tcp"
+  cidr_blocks       = [var.vpc_cidr_block]
   security_group_id = aws_security_group.sg_alb.id
-  description       = "Allow all outbound traffic from ALB"
+  description       = "Allow ALB outbound traffic only to application targets inside the VPC"
 }
 
 resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
@@ -38,11 +38,15 @@ resource "aws_security_group_rule" "allow_http_from_vpc_to_alb" {
 
 # Application Load Balancer
 resource "aws_lb" "internal_alb" {
-  name               = "${var.name_prefix}-internal-alb"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.sg_alb.id]
-  subnets            = var.private_subnet_ids
+  name                       = "${var.name_prefix}-internal-alb"
+  internal                   = true
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.sg_alb.id]
+  subnets                    = var.private_subnet_ids
+  idle_timeout               = var.alb_idle_timeout
+  enable_deletion_protection = var.enable_deletion_protection
+  drop_invalid_header_fields = var.drop_invalid_header_fields
+  enable_http2               = var.enable_http2
 
   tags = merge(
     var.common_tags,
@@ -68,6 +72,13 @@ resource "aws_lb_target_group" "app_target_group" {
     timeout             = var.health_check_timeout
     healthy_threshold   = var.healthy_threshold
     unhealthy_threshold = var.unhealthy_threshold
+  }
+
+  lifecycle {
+    precondition {
+      condition     = var.health_check_timeout < var.health_check_interval
+      error_message = "VALIDATION: health_check_timeout must be lower than health_check_interval."
+    }
   }
 
   tags = merge(
