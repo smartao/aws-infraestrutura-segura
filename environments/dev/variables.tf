@@ -120,6 +120,42 @@ variable "app_protocol" {
   type        = string
 }
 
+variable "health_check_path" {
+  description = "The destination for the ALB target group health check request"
+  type        = string
+  default     = "/"
+}
+
+variable "health_check_matcher" {
+  description = "The HTTP codes to use when checking for a successful health check response"
+  type        = string
+  default     = "200"
+}
+
+variable "health_check_interval" {
+  description = "Approximate amount of time, in seconds, between health checks"
+  type        = number
+  default     = 30
+}
+
+variable "health_check_timeout" {
+  description = "Amount of time, in seconds, during which no response means a failed health check"
+  type        = number
+  default     = 5
+}
+
+variable "healthy_threshold" {
+  description = "Number of consecutive successful health checks required before considering a target healthy"
+  type        = number
+  default     = 2
+}
+
+variable "unhealthy_threshold" {
+  description = "Number of consecutive failed health checks required before considering a target unhealthy"
+  type        = number
+  default     = 2
+}
+
 variable "app_script" {
   description = "The application script to initialize the EC2 instances"
   type        = string
