@@ -16,8 +16,8 @@ The architecture was designed simulating a real corporate environment focusing o
 - **Internal Application Load Balancer (ALB)**: The ALB is associated with private subnets and configured as internal (`internal = true`). It does not respond externally and its Security Group (`SG-ALB`) only accepts traffic from the internal network.
 - **Bastion Host**: Administrative access (SSH) occurs exclusively through a Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs (applies the principle of least privilege, avoiding broad `0.0.0.0/0`).
 - **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, without having a direct route to the Internet Gateway (IGW).
-- **Micro-segmentation via Security Groups**: 
-  - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`. 
+- **Micro-segmentation via Security Groups**:
+  - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
   - `SG-APP` restricts SSH traffic to accept connections **ONLY** from the Bastion.
 
 ## 📖 How to Use (Deploy and Destroy)
@@ -25,31 +25,37 @@ The architecture was designed simulating a real corporate environment focusing o
 The provisioned infrastructure can be initialized and deployed from the desired environment directory (e.g., `environments/dev`):
 
 1. **Access the environment directory:**
+
    ```bash
    cd environments/dev
    ```
 
 2. **Create the SSH key (if it doesn't exist in the `keys` folder yet):**
+
    ```bash
    ssh-keygen -t rsa -b 4096 -f keys/projeto-aws-key -N ""
    ```
 
 3. **Initialize Terraform** (downloading modules and configuring the backend):
+
    ```bash
    terraform init
    ```
 
 4. **Validate changes and generate the execution plan:**
+
    ```bash
    terraform plan -out plan.out
    ```
 
 5. **Apply the modifications to provision the infrastructure:**
+
    ```bash
    terraform apply plan.out
    ```
 
 6. **Deprovisioning (Destroy)**: To delete all created resources after testing:
+
    ```bash
    terraform destroy
    ```
@@ -74,7 +80,7 @@ No providers.
 |------|--------|---------|
 | <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | smartao/bastion/aws | 2.0.0 |
+| <a name="module_bastion"></a> [bastion](#module\_bastion) | smartao/bastion/aws | 2.1.0 |
 | <a name="module_network"></a> [network](#module\_network) | smartao/secure-vpc/aws | 1.1.0 |
 
 ## Resources
@@ -121,29 +127,3 @@ No resources.
 |------|-------------|
 | <a name="output_access_information"></a> [access\_information](#output\_access\_information) | Useful commands and URLs |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-<!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-No providers.
-
-## Modules
-
-No modules.
-
-## Resources
-
-No resources.
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-No outputs.
-<!-- END_TF_DOCS -->
