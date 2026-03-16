@@ -19,18 +19,16 @@ module "network" {
 # =============================================================================
 module "bastion" {
   source  = "smartao/bastion/aws"
-  version = "2.1.0"
+  version = "3.0.0"
 
-  vpc_id            = module.network.vpc_id
-  public_subnet_ids = module.network.public_subnet_ids
+  vpc_id    = module.network.vpc_id
+  subnet_id = module.network.public_subnet_ids[0]
 
   ssh_public_key = file(local.ssh_public_key_path)
   user_data      = file(local.bastion_user_data)
 
   instance_type             = var.instance_type
   bastion_ssh_ingress_cidrs = var.bastion_ssh_ingress_cidrs
-
-
 
   environment = var.environment
   name_prefix = local.name_prefix

@@ -72,7 +72,9 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 
 ## Modules
 
@@ -80,8 +82,8 @@ No providers.
 |------|--------|---------|
 | <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | smartao/bastion/aws | 2.1.0 |
-| <a name="module_network"></a> [network](#module\_network) | smartao/secure-vpc/aws | 1.1.0 |
+| <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://github.com/smartao/terraform-aws-bastion) | 3.0.0 |
+| <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://github.com/smartao/terraform-aws-secure-vpc) | 1.1.0 |
 
 ## Resources
 
