@@ -29,12 +29,6 @@ alb_listener_port               = 80
 alb_listener_protocol           = "HTTP"
 alb_allowed_ingress_cidr_blocks = ["10.0.0.0/16"]
 alb_allowed_egress_cidr_blocks  = ["10.0.0.0/16"]
-health_check_path               = "/"
-health_check_matcher            = "200"
-health_check_interval           = 30
-health_check_timeout            = 5
-healthy_threshold               = 2
-unhealthy_threshold             = 2
 
 
 # =============================================================================
