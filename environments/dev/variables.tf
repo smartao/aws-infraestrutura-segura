@@ -27,9 +27,13 @@ variable "azs" {
   }
 }
 
+variable "dev_access_information" {
+  description = "Output access information for dev environment"
+  type        = bool
+  default     = false
+}
 
 # Tagging Conventions
-
 variable "environment" {
   description = "Environment (e.g., dev, stg, prod)"
   type        = string
@@ -59,6 +63,7 @@ variable "project" {
     error_message = "VALIDATION: Project name must contain only lowercase letters, numbers, and hyphens."
   }
 }
+
 
 
 # =============================================================================
@@ -189,9 +194,9 @@ variable "app_html_page" {
   default     = "index.html.tpl"
 }
 
-# =============================================================================
+
 # Module: Auto Scaling
-# =============================================================================
+
 variable "asg_desired_capacity" {
   description = "Desired number of instances in the ASG"
   type        = number

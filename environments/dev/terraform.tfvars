@@ -1,11 +1,11 @@
 # =============================================================================
 # Global
 # =============================================================================
-region  = "us-east-1"
-azs     = ["us-east-1a", "us-east-1b"]
-owner   = "Sergei"
-project = "infra-segura"
-
+region                 = "us-east-1"
+azs                    = ["us-east-1a", "us-east-1b"]
+owner                  = "Sergei"
+project                = "infra-segura"
+dev_access_information = true
 
 # =============================================================================
 # Module: Network
