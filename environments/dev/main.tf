@@ -40,22 +40,16 @@ module "bastion" {
 module "alb" {
   source = "../../modules/alb"
 
-  vpc_id             = module.network.vpc_id
-  vpc_cidr_block     = module.network.vpc_cidr_block
-  private_subnet_ids = module.network.private_subnet_ids
+  vpc_id                      = module.network.vpc_id
+  vpc_cidr_block              = module.network.vpc_cidr_block
+  private_subnet_ids          = module.network.private_subnet_ids
+  allowed_ingress_cidr_blocks = [module.network.vpc_cidr_block]
+  allowed_egress_cidr_blocks  = module.network.private_subnet_cidr_blocks
 
-  allowed_ingress_cidr_blocks = var.alb_allowed_ingress_cidr_blocks
-  allowed_egress_cidr_blocks  = var.alb_allowed_egress_cidr_blocks
-  listener_port               = var.alb_listener_port
-  target_group_port           = var.app_port
-  listener_protocol           = var.alb_listener_protocol
-  target_group_protocol       = var.app_protocol
-  health_check_path           = var.health_check_path
-  health_check_matcher        = var.health_check_matcher
-  health_check_interval       = var.health_check_interval
-  health_check_timeout        = var.health_check_timeout
-  healthy_threshold           = var.healthy_threshold
-  unhealthy_threshold         = var.unhealthy_threshold
+  listener_port         = var.alb_listener_port
+  listener_protocol     = var.alb_listener_protocol
+  target_group_port     = var.app_port
+  target_group_protocol = var.app_protocol
 
   environment = var.environment
   name_prefix = local.name_prefix
