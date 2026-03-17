@@ -1,6 +1,6 @@
 # 🛡️ AWS Secure Infrastructure
 
-Terraform project to deploy an internal application with secure infrastructure on AWS, adhering to best practices and standard for the HashiCorp Registry.
+Terraform project to deploy an internal application with secure infrastructure on AWS.
 
 ![license](https://img.shields.io/badge/License-MIT-orange?style=flat-square)
 
