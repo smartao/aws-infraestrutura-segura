@@ -4,6 +4,20 @@ Terraform project to deploy an internal application with secure infrastructure o
 
 ![license](https://img.shields.io/badge/License-MIT-orange?style=flat-square)
 
+## 📋 Table of Contents
+
+- [🌐 Network Topology](#network-topology)
+- [📐 Architecture and Security Decisions](#architecture-and-security-decisions)
+- [✅ Prerequisites](#prerequisites)
+- [📖 How to Use (Deploy and Destroy)](#how-to-use-deploy-and-destroy)
+- [📝 Terraform Documentation](#terraform-documentation)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+
 ## 🌐 Network Topology
 
 ![Network Topology](imagens/topologia-rede-projeto.png)
@@ -19,6 +33,15 @@ The architecture was designed simulating a real corporate environment focusing o
 - **Micro-segmentation via Security Groups**:
   - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
   - `SG-APP` restricts SSH traffic to accept connections **ONLY** from the Bastion.
+
+## ✅ Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **AWS Account**: An active AWS account with appropriate permissions to create VPCs, EC2 instances, ALBs, and S3 buckets.
+- **AWS CLI**: Installed and configured with your credentials.
+- **Terraform**: Version 1.3.0 or higher installed locally.
+- **OpenSSH**: To generate and use SSH keys for access.
 
 ## 📖 How to Use (Deploy and Destroy)
 
@@ -62,34 +85,36 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 
 ---
 
+## 📝 Terraform Documentation
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+### Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 
-## Providers
+### Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 
-## Modules
+### Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://github.com/smartao/terraform-aws-bastion) | 3.0.0 |
-| <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://github.com/smartao/terraform-aws-secure-vpc) | 1.1.0 |
+| <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
+| <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.1.0 |
 
-## Resources
+### Resources
 
 No resources.
 
-## Inputs
+### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -123,7 +148,7 @@ No resources.
 | <a name="input_unhealthy_threshold"></a> [unhealthy\_threshold](#input\_unhealthy\_threshold) | Number of consecutive failed health checks required before considering a target unhealthy | `number` | `2` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | The CIDR block for the VPC | `string` | n/a | yes |
 
-## Outputs
+### Outputs
 
 | Name | Description |
 |------|-------------|
