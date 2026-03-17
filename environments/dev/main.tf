@@ -3,7 +3,7 @@
 # =============================================================================
 module "network" {
   source  = "smartao/secure-vpc/aws"
-  version = "1.1.0"
+  version = "1.2.0"
 
   vpc_cidr             = var.vpc_cidr
   public_subnet_cidrs  = var.public_subnet_cidrs
