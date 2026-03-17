@@ -39,7 +39,6 @@ The architecture was designed simulating a real corporate environment focusing o
 Before you begin, ensure you have the following:
 
 - **AWS Account**: An active AWS account with appropriate permissions to create VPCs, EC2 instances, ALBs, and S3 buckets.
-- **AWS CLI**: Installed and configured with your credentials.
 - **Terraform**: Version 1.3.0 or higher installed locally.
 - **OpenSSH**: To generate and use SSH keys for access.
 
