@@ -15,17 +15,17 @@
 ╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
 
 
-            InfraSegura - Infraestrutura & Segurança
+            InfraSegura - Infrastructure & Security
                 Private IP ec2: ${private_ip}
         +--------------------------------------+
-        |  🔐 Segurança de Infraestrutura      |
+        |  🔐 Infrastructure Security          |
         |  ☁ Cloud Security                    |
         |  🛡 Hardening & Defense               |
-        |  🔎 Monitoramento & Observabilidade  |
+        |  🔎 Monitoring & Observability       |
         +--------------------------------------+
 
-        "Segurança não é produto.
-         É um processo contínuo."
+        "Security is not a product.
+         It is a continuous process."
 
 </pre>
 </body>

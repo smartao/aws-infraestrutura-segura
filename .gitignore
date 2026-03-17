@@ -46,4 +46,3 @@ terraform.rc
 *.txt
 *.log
 local
-AGENTS.md
