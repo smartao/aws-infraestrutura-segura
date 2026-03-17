@@ -6,11 +6,11 @@ Terraform project to deploy an internal application with secure infrastructure o
 
 ## 📋 Table of Contents
 
-- [🌐 Network Topology](#network-topology)
-- [📐 Architecture and Security Decisions](#architecture-and-security-decisions)
-- [✅ Prerequisites](#prerequisites)
-- [📖 How to Use (Deploy and Destroy)](#how-to-use-deploy-and-destroy)
-- [📝 Terraform Documentation](#terraform-documentation)
+- 🌐 [Network Topology](#-network-topology)
+- 📐 [Architecture and Security Decisions](#-architecture-and-security-decisions)
+- ✅ [Prerequisites](#-prerequisites)
+- 📖 [How to Use (Deploy and Destroy)](#-how-to-use-deploy-and-destroy)
+- 📝 [Terraform Documentation](#-terraform-documentation)
   - [Requirements](#requirements)
   - [Providers](#providers)
   - [Modules](#modules)
