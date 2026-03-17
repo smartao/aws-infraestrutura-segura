@@ -107,7 +107,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 | <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
-| <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.1.0 |
+| <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.2.0 |
 
 ### Resources
 
