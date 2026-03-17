@@ -14,7 +14,7 @@ The architecture was designed simulating a real corporate environment focusing o
 
 - **Private by Default**: No application instances (EC2) have a public IP (`associate_public_ip_address = false`). The application is not directly accessible from the internet.
 - **Internal Application Load Balancer (ALB)**: The ALB is associated with private subnets and configured as internal (`internal = true`). It does not respond externally and its Security Group (`SG-ALB`) only accepts traffic from the internal network.
-- **Bastion Host (Internal Access Simulation)**: This host is used to simulate administrative access from an internal or corporate network. SSH management occurs exclusively through this Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
+- **Bastion Host (Internal Access Simulation)**: This host is used to simulate administrative access and access to the internal application (via HTTP) from an internal or corporate network. SSH management and HTTP access occur through this Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
 - **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, without having a direct route to the Internet Gateway (IGW).
 - **Micro-segmentation via Security Groups**:
   - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
