@@ -4,7 +4,7 @@ Terraform project to deploy an internal application with secure infrastructure o
 
 ![license](https://img.shields.io/badge/License-MIT-orange?style=flat-square)
 
-## 🕸️ Network Topology
+## 🌐 Network Topology
 
 ![Network Topology](imagens/topologia-rede-projeto.png)
 
