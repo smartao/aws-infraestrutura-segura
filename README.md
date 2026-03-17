@@ -132,6 +132,7 @@ No resources.
 | <a name="input_azs"></a> [azs](#input\_azs) | A list of availability zones to use | `list(string)` | n/a | yes |
 | <a name="input_bastion_script"></a> [bastion\_script](#input\_bastion\_script) | The user data script to initialize the bastion host | `string` | `"bastion.sh"` | no |
 | <a name="input_bastion_ssh_ingress_cidrs"></a> [bastion\_ssh\_ingress\_cidrs](#input\_bastion\_ssh\_ingress\_cidrs) | List of CIDR blocks allowed to SSH into the bastion host | `list(string)` | n/a | yes |
+| <a name="input_dev_access_information"></a> [dev\_access\_information](#input\_dev\_access\_information) | Output access information for dev environment | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment (e.g., dev, stg, prod) | `string` | `"dev"` | no |
 | <a name="input_health_check_interval"></a> [health\_check\_interval](#input\_health\_check\_interval) | Approximate amount of time, in seconds, between health checks | `number` | `30` | no |
 | <a name="input_health_check_matcher"></a> [health\_check\_matcher](#input\_health\_check\_matcher) | The HTTP codes to use when checking for a successful health check response | `string` | `"200"` | no |
@@ -153,4 +154,6 @@ No resources.
 | Name | Description |
 |------|-------------|
 | <a name="output_access_information"></a> [access\_information](#output\_access\_information) | Useful commands and URLs |
+| <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | The DNS name of the internal Application Load Balancer |
+| <a name="output_bastion_public_ip"></a> [bastion\_public\_ip](#output\_bastion\_public\_ip) | The public IP address of the Bastion Host. Use this to SSH into the bastion. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
