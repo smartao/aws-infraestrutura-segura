@@ -212,3 +212,15 @@ variable "common_tags" {
   description = "Common tags to be applied to all resources"
   type        = map(string)
 }
+
+variable "certificate_arn" {
+  description = "ARN of the ACM certificate for HTTPS listeners. Required when listener_protocol is HTTPS."
+  type        = string
+  default     = null
+}
+
+variable "ssl_policy" {
+  description = "SSL policy for the HTTPS listener"
+  type        = string
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}

@@ -104,6 +104,15 @@ variable "bastion_script" {
 }
 
 # =============================================================================
+# Module: ACM
+# =============================================================================
+variable "acm_common_name" {
+  description = "Common Name (CN) for the self-signed certificate used by the ALB"
+  type        = string
+  default     = "internal.app.local"
+}
+
+# =============================================================================
 # Module: ALB
 # =============================================================================
 variable "alb_listener_port" {
@@ -114,7 +123,7 @@ variable "alb_listener_port" {
 variable "alb_listener_protocol" {
   description = "The protocol used by the internal ALB listener"
   type        = string
-  default     = "HTTP"
+  default     = "HTTPS"
 }
 
 

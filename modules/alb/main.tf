@@ -126,6 +126,8 @@ resource "aws_lb_listener" "app_listener" {
   load_balancer_arn = aws_lb.internal_alb.arn
   port              = var.listener_port
   protocol          = var.listener_protocol
+  certificate_arn   = var.listener_protocol == "HTTPS" ? var.certificate_arn : null
+  ssl_policy        = var.listener_protocol == "HTTPS" ? var.ssl_policy : null
 
   default_action {
     type             = "forward"

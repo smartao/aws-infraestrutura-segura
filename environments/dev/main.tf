@@ -35,6 +35,19 @@ module "bastion" {
 }
 
 # =============================================================================
+# Certificate Layer
+# =============================================================================
+module "acm" {
+  source = "../../modules/acm"
+
+  common_name = var.acm_common_name
+
+  environment = var.environment
+  name_prefix = local.name_prefix
+  common_tags = local.common_tags
+}
+
+# =============================================================================
 # Edge Layer
 # =============================================================================
 module "alb" {
@@ -45,6 +58,7 @@ module "alb" {
   private_subnet_ids          = module.network.private_subnet_ids
   allowed_ingress_cidr_blocks = [module.network.vpc_cidr_block]
   allowed_egress_cidr_blocks  = module.network.private_subnet_cidr_blocks
+  certificate_arn             = module.acm.certificate_arn
 
   listener_port         = var.alb_listener_port
   listener_protocol     = var.alb_listener_protocol
