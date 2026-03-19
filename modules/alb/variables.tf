@@ -163,6 +163,12 @@ variable "enable_deletion_protection" {
   default     = false
 }
 
+variable "internal" {
+  description = "If true, the LB will be internal. If false, the LB will be public-facing."
+  type        = bool
+  default     = true
+}
+
 variable "drop_invalid_header_fields" {
   description = "Indicates whether HTTP headers with invalid names are removed by the ALB"
   type        = bool

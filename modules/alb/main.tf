@@ -6,11 +6,11 @@ locals {
 
   # Defines which CIDR blocks the ALB can send traffic to (egress).
   # If 'allowed_egress_cidr_blocks' is empty, it defaults to the entire VPC CIDR.
-  alb_egress_cidr_blocks  = length(var.allowed_egress_cidr_blocks) > 0 ? var.allowed_egress_cidr_blocks : [var.vpc_cidr_block]
+  alb_egress_cidr_blocks = length(var.allowed_egress_cidr_blocks) > 0 ? var.allowed_egress_cidr_blocks : [var.vpc_cidr_block]
 
   # Consolidates the security group IDs for the ALB.
   # If 'create_security_group' is true, it includes the newly created SG along with any extra SGs provided.
-  alb_security_group_ids  = var.create_security_group ? concat([aws_security_group.sg_alb[0].id], var.security_group_ids) : var.security_group_ids
+  alb_security_group_ids = var.create_security_group ? concat([aws_security_group.sg_alb[0].id], var.security_group_ids) : var.security_group_ids
 }
 
 # SG - Security Group for Application Load Balancer (ALB)
@@ -64,9 +64,9 @@ resource "aws_security_group_rule" "allow_http_from_sgs_to_alb" {
 }
 
 # Application Load Balancer
-resource "aws_lb" "internal_alb" {
-  name                       = "${var.name_prefix}-internal-alb"
-  internal                   = true
+resource "aws_lb" "alb" {
+  name                       = "${var.name_prefix}-alb"
+  internal                   = var.internal
   load_balancer_type         = "application"
   security_groups            = local.alb_security_group_ids
   subnets                    = var.private_subnet_ids
@@ -78,7 +78,7 @@ resource "aws_lb" "internal_alb" {
   tags = merge(
     var.common_tags,
     {
-      Name        = "${var.name_prefix}-internal-alb"
+      Name        = "${var.name_prefix}-alb"
       Environment = var.environment
     }
   )
@@ -123,7 +123,7 @@ resource "aws_lb_target_group" "app_target_group" {
 
 
 resource "aws_lb_listener" "app_listener" {
-  load_balancer_arn = aws_lb.internal_alb.arn
+  load_balancer_arn = aws_lb.alb.arn
   port              = var.listener_port
   protocol          = var.listener_protocol
   certificate_arn   = var.listener_protocol == "HTTPS" ? var.certificate_arn : null
