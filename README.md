@@ -27,8 +27,8 @@ Terraform project to deploy an internal application with secure infrastructure o
 The architecture was designed simulating a real corporate environment focusing on high security and scalability:
 
 - **Private by Default**: No application instances (EC2) have a public IP (`associate_public_ip_address = false`). The application is not directly accessible from the internet.
-- **Internal Application Load Balancer (ALB)**: The ALB is associated with private subnets and configured as internal (`internal = true`). It does not respond externally and its Security Group (`SG-ALB`) only accepts traffic from the internal network.
-- **Bastion Host (Internal Access Simulation)**: This host is used to simulate administrative access and access to the internal application (via HTTP) from an internal or corporate network. SSH management and HTTP access occur through this Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
+- **Internal Application Load Balancer (ALB) with HTTPS**: The ALB is associated with private subnets and configured as internal (`internal = true`). It uses an HTTPS listener (port 443) with a self-signed certificate managed by the **ACM** module. It does not respond externally and its Security Group (`SG-ALB`) only accepts traffic from the internal network (VPC CIDR).
+- **Bastion Host (Internal Access Simulation)**: This host is used to simulate administrative access and access to the internal application (via HTTPS) from an internal or corporate network. SSH management and HTTPS access occur through this Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
 - **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, without having a direct route to the Internet Gateway (IGW).
 - **Micro-segmentation via Security Groups**:
   - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
@@ -104,6 +104,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_acm"></a> [acm](#module\_acm) | [smartao/acm-self-signed/aws](https://registry.terraform.io/modules/smartao/acm-self-signed/aws/latest) | 1.1.0 |
 | <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
@@ -117,10 +118,10 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_acm_common_name"></a> [acm\_common\_name](#input\_acm\_common\_name) | Common Name (CN) for the self-signed certificate used by the ALB | `string` | `"internal.app.local"` | no |
 | <a name="input_alb_allowed_egress_cidr_blocks"></a> [alb\_allowed\_egress\_cidr\_blocks](#input\_alb\_allowed\_egress\_cidr\_blocks) | CIDR blocks the internal ALB can reach on the target group port | `list(string)` | `[]` | no |
-| <a name="input_alb_allowed_ingress_cidr_blocks"></a> [alb\_allowed\_ingress\_cidr\_blocks](#input\_alb\_allowed\_ingress\_cidr\_blocks) | Trusted CIDR blocks allowed to access the internal ALB listener | `list(string)` | `[]` | no |
 | <a name="input_alb_listener_port"></a> [alb\_listener\_port](#input\_alb\_listener\_port) | The port on which the internal ALB listens | `number` | n/a | yes |
-| <a name="input_alb_listener_protocol"></a> [alb\_listener\_protocol](#input\_alb\_listener\_protocol) | The protocol used by the internal ALB listener | `string` | `"HTTP"` | no |
+| <a name="input_alb_listener_protocol"></a> [alb\_listener\_protocol](#input\_alb\_listener\_protocol) | The protocol used by the internal ALB listener | `string` | `"HTTPS"` | no |
 | <a name="input_app_html_page"></a> [app\_html\_page](#input\_app\_html\_page) | The HTML template deployed by the application user data | `string` | `"index.html.tpl"` | no |
 | <a name="input_app_port"></a> [app\_port](#input\_app\_port) | The port on which the application listens | `number` | n/a | yes |
 | <a name="input_app_protocol"></a> [app\_protocol](#input\_app\_protocol) | The protocol used by the application (e.g., HTTP, HTTPS) | `string` | n/a | yes |
