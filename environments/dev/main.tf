@@ -38,7 +38,8 @@ module "bastion" {
 # Certificate Layer
 # =============================================================================
 module "acm" {
-  source = "git@github.com:smartao/terraform-aws-acm-self-signed.git"
+  source  = "smartao/acm-self-signed/aws"
+  version = "1.0.0"
 
   common_name = var.acm_common_name
 
