@@ -39,7 +39,7 @@ module "bastion" {
 # =============================================================================
 module "acm" {
   source  = "smartao/acm-self-signed/aws"
-  version = "1.0.0"
+  version = "1.1.0"
 
   common_name = var.acm_common_name
 
