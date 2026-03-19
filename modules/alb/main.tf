@@ -133,4 +133,11 @@ resource "aws_lb_listener" "app_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_target_group.arn
   }
+
+  lifecycle {
+    precondition {
+      condition     = var.listener_protocol == "HTTPS" ? var.certificate_arn != null : true
+      error_message = "VALIDATION: certificate_arn must be provided when listener_protocol is HTTPS."
+    }
+  }
 }
