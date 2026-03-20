@@ -64,19 +64,29 @@ The provisioned infrastructure can be initialized and deployed from the desired 
    terraform init
    ```
 
-4. **Validate changes and generate the execution plan:**
+4. **(Optional) Format and validate the code:**
+
+   ```bash
+   terraform fmt --recursive
+   terraform validate
+   ```
+
+5. **Validate changes and generate the execution plan:**
 
    ```bash
    terraform plan -out plan.out
    ```
 
-5. **Apply the modifications to provision the infrastructure:**
+6. **Apply the modifications to provision the infrastructure:**
 
    ```bash
    terraform apply plan.out
    ```
 
-6. **Deprovisioning (Destroy)**: To delete all created resources after testing:
+   > [!TIP]
+   > If you set `dev_access_information = true` in your `.tfvars`, Terraform will output standard commands to access the Bastion Host and test the internal application URL.
+
+7. **Deprovisioning (Destroy)**: To delete all created resources after testing:
 
    ```bash
    terraform destroy
@@ -105,7 +115,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | [smartao/acm-self-signed/aws](https://registry.terraform.io/modules/smartao/acm-self-signed/aws/latest) | 1.1.0 |
-| <a name="module_alb"></a> [alb](#module\_alb) | [smartao/alb/aws](https://registry.terraform.io/modules/smartao/alb/aws/latest) | 1.0.0 |
+| <a name="module_alb"></a> [alb](#module\_alb) | [smartao/alb/aws](https://registry.terraform.io/modules/smartao/alb/aws/latest) | 2.0.1 |
 | <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
 | <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.2.0 |
