@@ -52,7 +52,8 @@ module "acm" {
 # Edge Layer
 # =============================================================================
 module "alb" {
-  source = "../../modules/alb"
+  source  = "smartao/alb/aws"
+  version = "1.0.0"
 
   vpc_id                      = module.network.vpc_id
   vpc_cidr_block              = module.network.vpc_cidr_block
