@@ -53,14 +53,13 @@ module "acm" {
 # =============================================================================
 module "alb" {
   source  = "smartao/alb/aws"
-  version = "1.0.0"
+  version = "2.0.1"
 
-  vpc_id                      = module.network.vpc_id
-  vpc_cidr_block              = module.network.vpc_cidr_block
-  private_subnet_ids          = module.network.private_subnet_ids
-  allowed_ingress_cidr_blocks = [module.network.vpc_cidr_block]
-  allowed_egress_cidr_blocks  = module.network.private_subnet_cidr_blocks
-  certificate_arn             = module.acm.certificate_arn
+  vpc_id          = module.network.vpc_id
+  vpc_cidr_block  = module.network.vpc_cidr_block
+  subnet_ids      = module.network.private_subnet_ids
+  certificate_arn = module.acm.certificate_arn
+
 
   listener_port         = var.alb_listener_port
   listener_protocol     = var.alb_listener_protocol
