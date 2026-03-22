@@ -115,18 +115,9 @@ variable "app_user_data" {
 }
 
 variable "asg_desired_capacity" {
-  description = "Quantidade desejada de instâncias no Auto Scaling Group"
+  description = "Desired number of instances in the Auto Scaling Group"
   type        = number
   default     = 2
-
-  validation {
-    condition = (
-      var.asg_desired_capacity >= var.asg_min_size &&
-      var.asg_desired_capacity <= var.asg_max_size
-    )
-
-    error_message = "VALIDATION: asg_desired_capacity must be between asg_min_size and asg_max_size."
-  }
 }
 
 variable "asg_min_size" {
@@ -144,11 +135,6 @@ variable "asg_max_size" {
   description = "Maximum number of instances in the ASG"
   type        = number
   default     = 3
-
-  validation {
-    condition     = var.asg_max_size >= var.asg_min_size
-    error_message = "VALIDATION: asg_max_size must be greater than or equal to asg_min_size."
-  }
 }
 
 variable "asg_health_check_grace_period" {
