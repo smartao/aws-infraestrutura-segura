@@ -5,7 +5,7 @@ locals {
 # SG - Security Group for Application Instances
 resource "aws_security_group" "sg_app" {
   name        = "${var.name_prefix}-app-sg"
-  description = "Allow traffic to application instances from ALB and SSH from Bastion"
+  description = "Allow traffic to application instances from ALB"
   vpc_id      = var.vpc_id
 
   tags = {
@@ -35,17 +35,6 @@ resource "aws_security_group_rule" "allow_http_app_from_alb" {
   description              = "Allows HTTP traffic from SG-ALB"
 }
 
-
-# SG-APP allows SSH from SG-BASTION
-resource "aws_security_group_rule" "allow_ssh_app_from_bastion" {
-  type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
-  protocol                 = "tcp"
-  source_security_group_id = var.bastion_sg_id
-  security_group_id        = aws_security_group.sg_app.id
-  description              = "Allows SSH traffic from SG-BASTION"
-}
 
 data "aws_ssm_parameter" "ubuntu" {
   name = var.ssm_parameter_name
