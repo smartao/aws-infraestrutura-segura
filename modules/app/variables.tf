@@ -7,10 +7,6 @@ variable "private_subnet_ids" {
   description = "List of private subnet IDs for application instances and internal ALB"
   type        = list(string)
 }
-variable "bastion_sg_id" {
-  description = "The ID of the Security Group for the Bastion Host"
-  type        = string
-}
 
 variable "sg_alb_id" {
   description = "The ID of the Security Group for the Application Load Balancer"
@@ -46,7 +42,7 @@ variable "app_protocol" {
 }
 
 variable "ssm_parameter_name" {
-  description = "The name of the SSM parameter that contains the AMI ID for the Bastion Host"
+  description = "The name of the SSM parameter that contains the AMI ID Launch Template"
   type        = string
   default     = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
