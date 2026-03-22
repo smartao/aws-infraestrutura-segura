@@ -83,7 +83,6 @@ module "app" {
   private_subnet_ids   = module.network.private_subnet_ids
   sg_alb_id            = module.alb.sg_alb_id
   app_target_group_arn = module.alb.app_target_group_arn
-  bastion_sg_id        = module.bastion.bastion_sg_id
 
   ssh_public_key       = file(local.ssh_public_key_path)
   instance_type        = var.instance_type
