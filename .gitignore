@@ -43,6 +43,7 @@ terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/terraform
 
 ## Sergei additional ignores 
+modules/*/.terraform.lock.hcl
 *.txt
 *.log
 local
