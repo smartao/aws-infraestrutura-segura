@@ -65,10 +65,6 @@ variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string
   default     = "t3.micro"
-  validation {
-    condition     = can(regex("^t3\\.", var.instance_type))
-    error_message = "VALIDATION: Instance type must belong to the t3 family."
-  }
 }
 
 
