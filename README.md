@@ -1,8 +1,8 @@
+![license](https://img.shields.io/badge/License-MIT-orange?style=flat-square)
+
 # 🛡️ AWS Secure Infrastructure
 
 Terraform project to deploy an internal application with secure infrastructure on AWS.
-
-![license](https://img.shields.io/badge/License-MIT-orange?style=flat-square)
 
 ## 📋 Table of Contents
 
@@ -32,7 +32,6 @@ The architecture was designed simulating a real corporate environment focusing o
 - **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, without having a direct route to the Internet Gateway (IGW).
 - **Micro-segmentation via Security Groups**:
   - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
-  - `SG-APP` restricts SSH traffic to accept connections **ONLY** from the Bastion.
 
 ## ✅ Prerequisites
 
