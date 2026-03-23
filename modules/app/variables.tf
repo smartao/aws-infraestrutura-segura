@@ -47,16 +47,6 @@ variable "ssm_parameter_name" {
   default     = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
 }
 
-variable "ssh_public_key" {
-  description = "The public key for SSH access to EC2 instances"
-  type        = string
-
-  validation {
-    condition     = can(regex("^ssh-(rsa|ed25519)\\s+[A-Za-z0-9+/=]+", var.ssh_public_key))
-    error_message = "VALIDATION: Invalid SSH public key format."
-  }
-}
-
 variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string

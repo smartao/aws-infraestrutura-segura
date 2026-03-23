@@ -40,12 +40,6 @@ data "aws_ssm_parameter" "ubuntu" {
   name = var.ssm_parameter_name
 }
 
-resource "aws_key_pair" "generated_key" {
-  key_name   = "${var.name_prefix}-app-key"
-  public_key = var.ssh_public_key
-}
-
-
 # Application EC2 Instances (via Launch Template and Auto Scaling Group)
 resource "aws_launch_template" "app_launch_template" {
   name_prefix            = "${var.name_prefix}-app-lt"
@@ -53,7 +47,6 @@ resource "aws_launch_template" "app_launch_template" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.sg_app.id]
   user_data              = local.rendered_user_data
-  key_name               = aws_key_pair.generated_key.key_name
   update_default_version = true
   block_device_mappings {
     device_name = "/dev/xvda"

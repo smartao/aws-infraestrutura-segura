@@ -84,7 +84,6 @@ module "app" {
   sg_alb_id            = module.alb.sg_alb_id
   app_target_group_arn = module.alb.app_target_group_arn
 
-  ssh_public_key       = file(local.ssh_public_key_path)
   instance_type        = var.instance_type
   app_port             = var.app_port
   app_protocol         = var.app_protocol
