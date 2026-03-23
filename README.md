@@ -116,7 +116,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | [smartao/acm-self-signed/aws](https://registry.terraform.io/modules/smartao/acm-self-signed/aws/latest) | 1.1.0 |
 | <a name="module_alb"></a> [alb](#module\_alb) | [smartao/alb/aws](https://registry.terraform.io/modules/smartao/alb/aws/latest) | 2.0.1 |
-| <a name="module_app"></a> [app](#module\_app) | ../../modules/app | n/a |
+| <a name="module_app"></a> [app](#module\_app) | [smartao/ec2-autoscaling-app/aws](https://registry.terraform.io/modules/smartao/ec2-autoscaling-app/aws/latest) | 0.1.0 |
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
 | <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.2.0 |
 
