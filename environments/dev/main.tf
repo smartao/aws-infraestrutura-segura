@@ -77,7 +77,7 @@ module "alb" {
 # =============================================================================
 
 module "app" {
-  source = "../../modules/app"
+  source = "git@github.com:smartao/terraform-aws-ec2-autoscaling-app.git"
 
   vpc_id               = module.network.vpc_id
   private_subnet_ids   = module.network.private_subnet_ids
