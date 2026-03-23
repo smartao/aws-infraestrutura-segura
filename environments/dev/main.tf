@@ -78,7 +78,7 @@ module "alb" {
 
 module "app" {
   source  = "smartao/ec2-autoscaling-app/aws"
-  version = "0.1.0"
+  version = "1.0.0"
 
   vpc_id               = module.network.vpc_id
   private_subnet_ids   = module.network.private_subnet_ids
