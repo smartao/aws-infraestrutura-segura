@@ -74,6 +74,8 @@ module "alb" {
 module "waf" {
   source = "../../modules/waf"
 
+  count = var.enable_waf ? 1 : 0
+
   alb_arn = module.alb.alb_arn
 
   name_prefix = local.name_prefix

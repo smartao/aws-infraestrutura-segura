@@ -170,6 +170,15 @@ variable "unhealthy_threshold" {
 }
 
 # =============================================================================
+# Module: WAF
+# =============================================================================
+variable "enable_waf" {
+  description = "Activates the WAF security feature to protect the ALB."
+  type        = bool
+  default     = false
+}
+
+# =============================================================================
 # Module: App
 # =============================================================================
 variable "instance_type" {
