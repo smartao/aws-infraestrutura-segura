@@ -21,10 +21,10 @@ output "access_information" {
 ssh -o StrictHostKeyChecking=accept-new ubuntu@${module.bastion.bastion_public_ip}
 
 🌍 Application URL:
-https://${module.alb.alb_dns_name}
+${lower(var.alb_listener_protocol)}://${module.alb.alb_dns_name}
 
 🧪 Load balance test via bastion host
-while true; do curl -sk https://${module.alb.alb_dns_name} ; sleep 1; done
+while true; do curl -sk ${lower(var.alb_listener_protocol)}://${module.alb.alb_dns_name} ; sleep 1; done
 
 =======================================================
 
