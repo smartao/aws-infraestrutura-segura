@@ -105,6 +105,15 @@ resource "terraform_data" "validate_alb_protocol" {
   }
 }
 
+resource "terraform_data" "validate_dev_access" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.dev_access_information == false : true
+      error_message = "VALIDATION ERROR: dev_access_information must be false when environment is 'prod'."
+    }
+  }
+}
+
 # =============================================================================
 # Application Layer
 # =============================================================================

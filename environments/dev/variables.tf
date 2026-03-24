@@ -42,6 +42,7 @@ variable "environment" {
   # NOTES: 
   # If environment is 'prod', enable_waf must be true (validated in main.tf)
   # If environment is 'prod', alb_listener_protocol must be 'HTTPS' (validated in main.tf)
+  # If environment is 'prod', dev_access_information must be false (validated in main.tf)
 
   validation {
     condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
