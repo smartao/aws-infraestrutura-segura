@@ -41,6 +41,8 @@ module "acm" {
   source  = "smartao/acm-self-signed/aws"
   version = "1.1.0"
 
+  count = var.alb_listener_protocol == "HTTPS" ? 1 : 0
+
   common_name = var.acm_common_name
 
   environment = var.environment
@@ -53,13 +55,13 @@ module "acm" {
 # =============================================================================
 module "alb" {
   source  = "smartao/alb/aws"
-  version = "2.0.1"
+  version = "2.1.1"
 
-  vpc_id          = module.network.vpc_id
-  vpc_cidr_block  = module.network.vpc_cidr_block
-  subnet_ids      = module.network.private_subnet_ids
-  certificate_arn = module.acm.certificate_arn
+  vpc_id         = module.network.vpc_id
+  vpc_cidr_block = module.network.vpc_cidr_block
+  subnet_ids     = module.network.private_subnet_ids
 
+  certificate_arn = local.certificate_arn
 
   listener_port         = var.alb_listener_port
   listener_protocol     = var.alb_listener_protocol
