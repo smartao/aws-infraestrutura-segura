@@ -43,6 +43,7 @@ variable "environment" {
   #   - enable_waf must be true (validated in main.tf)
   #   - alb_listener_protocol must be 'HTTPS' (validated in main.tf)
   #   - dev_access_information must be false (validated in main.tf)
+  #   - bastion_ssh_ingress_cidrs must NOT contain '0.0.0.0/0' (validated in main.tf)
 
   validation {
     condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
@@ -93,7 +94,7 @@ variable "private_subnet_cidrs" {
 # Module: Bastion
 # =============================================================================
 variable "bastion_ssh_ingress_cidrs" {
-  description = "List of CIDR blocks allowed to SSH into the bastion host"
+  description = "List of CIDR blocks allowed to SSH into the bastion host. (Cannot contain '0.0.0.0/0' if environment is 'prod')"
   type        = list(string)
 }
 

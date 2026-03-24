@@ -114,6 +114,15 @@ resource "terraform_data" "validate_dev_access" {
   }
 }
 
+resource "terraform_data" "validate_bastion_ingress" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? !contains(var.bastion_ssh_ingress_cidrs, "0.0.0.0/0") : true
+      error_message = "VALIDATION ERROR: bastion_ssh_ingress_cidrs cannot contain '0.0.0.0/0' when environment is 'prod' for security reasons."
+    }
+  }
+}
+
 # =============================================================================
 # Application Layer
 # =============================================================================

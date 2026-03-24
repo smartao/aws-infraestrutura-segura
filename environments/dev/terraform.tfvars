@@ -5,6 +5,7 @@ region                 = "us-east-1"
 azs                    = ["us-east-1a", "us-east-1b"]
 owner                  = "Sergei"
 project                = "infra-segura"
+environment            = "dev"
 dev_access_information = true
 
 # =============================================================================
@@ -18,7 +19,7 @@ private_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24"]
 # =============================================================================
 # Module: Bastion
 # =============================================================================
-bastion_ssh_ingress_cidrs = ["0.0.0.0/0"] # WARNING: In a real scenario, restrict this to trusted IPs
+bastion_ssh_ingress_cidrs = ["0.0.0.0/0"]
 ssh_key_name              = "dev_key.pub"
 
 
@@ -36,7 +37,7 @@ alb_listener_protocol = "HTTPS"
 # =============================================================================
 # Module: WAF
 # =============================================================================
-enable_waf = false
+enable_waf = true
 
 # =============================================================================
 # Module: App
