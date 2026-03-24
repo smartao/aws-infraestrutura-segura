@@ -85,6 +85,27 @@ module "waf" {
 }
 
 # =============================================================================
+# Validation Layer
+# =============================================================================
+resource "terraform_data" "validate_waf" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.enable_waf : true
+      error_message = "VALIDATION ERROR: WAF must be enabled (enable_waf = true) when environment is 'prod'."
+    }
+  }
+}
+
+resource "terraform_data" "validate_alb_protocol" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.alb_listener_protocol == "HTTPS" : true
+      error_message = "VALIDATION ERROR: ALB listener protocol must be 'HTTPS' when environment is 'prod'."
+    }
+  }
+}
+
+# =============================================================================
 # Application Layer
 # =============================================================================
 

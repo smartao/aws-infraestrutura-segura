@@ -39,6 +39,10 @@ variable "environment" {
   type        = string
   default     = "dev"
 
+  # NOTES: 
+  # If environment is 'prod', enable_waf must be true (validated in main.tf)
+  # If environment is 'prod', alb_listener_protocol must be 'HTTPS' (validated in main.tf)
+
   validation {
     condition     = contains(["tst", "dev", "stage", "prod"], var.environment)
     error_message = "VALIDATION: Invalid environment. Allowed values: tst, dev, stage ou prod."
@@ -173,7 +177,7 @@ variable "unhealthy_threshold" {
 # Module: WAF
 # =============================================================================
 variable "enable_waf" {
-  description = "Activates the WAF security feature to protect the ALB."
+  description = "Activates the WAF security feature to protect the ALB. (Mandatory if environment is 'prod')"
   type        = bool
   default     = false
 }
