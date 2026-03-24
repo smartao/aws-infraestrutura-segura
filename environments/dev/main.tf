@@ -71,6 +71,14 @@ module "alb" {
   common_tags = local.common_tags
 }
 
+module "waf" {
+  source = "../../modules/waf"
+
+  alb_arn = module.alb.alb_arn
+
+  name_prefix = local.name_prefix
+  common_tags = local.common_tags
+}
 
 # =============================================================================
 # Application Layer
