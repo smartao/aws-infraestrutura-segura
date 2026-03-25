@@ -1,4 +1,43 @@
 # =============================================================================
+# Validation Layer
+# =============================================================================
+resource "terraform_data" "validate_waf" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.enable_waf : true
+      error_message = "VALIDATION ERROR: WAF must be enabled (enable_waf = true) when environment is 'prod'."
+    }
+  }
+}
+
+resource "terraform_data" "validate_alb_protocol" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.alb_listener_protocol == "HTTPS" : true
+      error_message = "VALIDATION ERROR: ALB listener protocol must be 'HTTPS' when environment is 'prod'."
+    }
+  }
+}
+
+resource "terraform_data" "validate_dev_access" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? var.dev_access_information == false : true
+      error_message = "VALIDATION ERROR: dev_access_information must be false when environment is 'prod'."
+    }
+  }
+}
+
+resource "terraform_data" "validate_bastion_ingress" {
+  lifecycle {
+    precondition {
+      condition     = var.environment == "prod" ? !contains(var.bastion_ssh_ingress_cidrs, "0.0.0.0/0") : true
+      error_message = "VALIDATION ERROR: bastion_ssh_ingress_cidrs cannot contain '0.0.0.0/0' when environment is 'prod' for security reasons."
+    }
+  }
+}
+
+# =============================================================================
 # Network Layer
 # =============================================================================
 module "network" {
@@ -85,44 +124,6 @@ module "waf" {
   common_tags = local.common_tags
 }
 
-# =============================================================================
-# Validation Layer
-# =============================================================================
-resource "terraform_data" "validate_waf" {
-  lifecycle {
-    precondition {
-      condition     = var.environment == "prod" ? var.enable_waf : true
-      error_message = "VALIDATION ERROR: WAF must be enabled (enable_waf = true) when environment is 'prod'."
-    }
-  }
-}
-
-resource "terraform_data" "validate_alb_protocol" {
-  lifecycle {
-    precondition {
-      condition     = var.environment == "prod" ? var.alb_listener_protocol == "HTTPS" : true
-      error_message = "VALIDATION ERROR: ALB listener protocol must be 'HTTPS' when environment is 'prod'."
-    }
-  }
-}
-
-resource "terraform_data" "validate_dev_access" {
-  lifecycle {
-    precondition {
-      condition     = var.environment == "prod" ? var.dev_access_information == false : true
-      error_message = "VALIDATION ERROR: dev_access_information must be false when environment is 'prod'."
-    }
-  }
-}
-
-resource "terraform_data" "validate_bastion_ingress" {
-  lifecycle {
-    precondition {
-      condition     = var.environment == "prod" ? !contains(var.bastion_ssh_ingress_cidrs, "0.0.0.0/0") : true
-      error_message = "VALIDATION ERROR: bastion_ssh_ingress_cidrs cannot contain '0.0.0.0/0' when environment is 'prod' for security reasons."
-    }
-  }
-}
 
 # =============================================================================
 # Application Layer
