@@ -24,12 +24,18 @@ Terraform project to deploy an internal application with secure infrastructure o
 
 ## 📐 Architecture and Security Decisions
 
-The architecture was designed simulating a real corporate environment focusing on high security and scalability:
+The architecture was designed simulating a real corporate environment focusing on high security, compliance, and scalability:
 
 - **Private by Default**: No application instances (EC2) have a public IP (`associate_public_ip_address = false`). The application is not directly accessible from the internet.
-- **Internal Application Load Balancer (ALB) with HTTPS**: The ALB is associated with private subnets and configured as internal (`internal = true`). It uses an HTTPS listener (port 443) with a self-signed certificate managed by the **ACM** module. It does not respond externally and its Security Group (`SG-ALB`) only accepts traffic from the internal network (VPC CIDR).
-- **Bastion Host (Internal Access Simulation)**: This host is used to simulate administrative access and access to the internal application (via HTTPS) from an internal or corporate network. SSH management and HTTPS access occur through this Bastion Host located in a public subnet, whose Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
-- **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, without having a direct route to the Internet Gateway (IGW).
+- **Dynamic Internal Load Balancer (ALB)**: The ALB is associated with private subnets and configured as internal (`internal = true`). It automatically configures its listener port (80 or 443) based on the specified protocol (`HTTP` or `HTTPS`). To ensure encryption in transit, `HTTPS` is the default and uses a self-signed certificate managed by the **ACM** module. The Security Group (`SG-ALB`) only accepts traffic from the internal network (VPC CIDR).
+- **Web Application Firewall (WAF)**: An optional but highly recommended WAF layer is managed via the `modules/waf` module to protect the ALB against common web exploits. In `prod` environments, the WAF is strictly **mandatory**.
+- **Bastion Host (VPN Client Simulation)**: This host is utilized strictly to simulate an external corporate connection, acting similarly to an AWS Client VPN endpoint. It is designed to evaluate internal application accessibility via HTTP/HTTPS only, without being used for traditional administrative SSH access to the application instances. Located in a public subnet, its Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
+- **Production Guardrails (Infrastructure Validation)**: The codebase employs strict `terraform_data` lifecycle preconditions enforcement to validate the security posture before deployment, especially when `environment = "prod"`:
+  - 🛑 Blocks the wildcard `0.0.0.0/0` in Bastion ingress.
+  - 🛡️ Demands that `enable_waf = true`.
+  - 🔒 Requires `alb_listener_protocol = "HTTPS"`.
+  - 🚫 Disables the output of sensitive developer access information.
+- **Controlled External Access**: Private instances use a NAT Gateway (located in the public subnets) for controlled outbound communication (egress) and package updates, isolated from the Internet Gateway (IGW).
 - **Micro-segmentation via Security Groups**:
   - `SG-APP` restricts application traffic to accept connections **ONLY** from `SG-ALB`.
 
@@ -95,19 +101,20 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 
 ## 📝 Terraform Documentation
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-### Requirements
+<!-- BEGIN_TF_DOCS -->
+## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | ~> 4.0 |
 
-### Providers
+## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ### Modules
 
@@ -119,17 +126,21 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
 | <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.2.0 |
 
-### Resources
+## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [terraform_data.validate_alb_protocol](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.validate_bastion_ingress](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.validate_dev_access](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.validate_waf](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 
-### Inputs
+## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_acm_common_name"></a> [acm\_common\_name](#input\_acm\_common\_name) | Common Name (CN) for the self-signed certificate used by the ALB | `string` | `"internal.app.local"` | no |
 | <a name="input_alb_allowed_egress_cidr_blocks"></a> [alb\_allowed\_egress\_cidr\_blocks](#input\_alb\_allowed\_egress\_cidr\_blocks) | CIDR blocks the internal ALB can reach on the target group port | `list(string)` | `[]` | no |
-| <a name="input_alb_listener_port"></a> [alb\_listener\_port](#input\_alb\_listener\_port) | The port on which the internal ALB listens | `number` | n/a | yes |
 | <a name="input_alb_listener_protocol"></a> [alb\_listener\_protocol](#input\_alb\_listener\_protocol) | The protocol used by the internal ALB listener | `string` | `"HTTPS"` | no |
 | <a name="input_app_html_page"></a> [app\_html\_page](#input\_app\_html\_page) | The HTML template deployed by the application user data | `string` | `"index.html.tpl"` | no |
 | <a name="input_app_port"></a> [app\_port](#input\_app\_port) | The port on which the application listens | `number` | n/a | yes |
@@ -140,8 +151,9 @@ No resources.
 | <a name="input_asg_min_size"></a> [asg\_min\_size](#input\_asg\_min\_size) | Minimum number of instances in the ASG | `number` | n/a | yes |
 | <a name="input_azs"></a> [azs](#input\_azs) | A list of availability zones to use | `list(string)` | n/a | yes |
 | <a name="input_bastion_script"></a> [bastion\_script](#input\_bastion\_script) | The user data script to initialize the bastion host | `string` | `"bastion.sh"` | no |
-| <a name="input_bastion_ssh_ingress_cidrs"></a> [bastion\_ssh\_ingress\_cidrs](#input\_bastion\_ssh\_ingress\_cidrs) | List of CIDR blocks allowed to SSH into the bastion host | `list(string)` | n/a | yes |
+| <a name="input_bastion_ssh_ingress_cidrs"></a> [bastion\_ssh\_ingress\_cidrs](#input\_bastion\_ssh\_ingress\_cidrs) | List of CIDR blocks allowed to SSH into the bastion host. (Cannot contain '0.0.0.0/0' if environment is 'prod') | `list(string)` | n/a | yes |
 | <a name="input_dev_access_information"></a> [dev\_access\_information](#input\_dev\_access\_information) | Output access information for dev environment | `bool` | `false` | no |
+| <a name="input_enable_waf"></a> [enable\_waf](#input\_enable\_waf) | Activates the WAF security feature to protect the ALB. (Mandatory if environment is 'prod') | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment (e.g., dev, stg, prod) | `string` | `"dev"` | no |
 | <a name="input_health_check_interval"></a> [health\_check\_interval](#input\_health\_check\_interval) | Approximate amount of time, in seconds, between health checks | `number` | `30` | no |
 | <a name="input_health_check_matcher"></a> [health\_check\_matcher](#input\_health\_check\_matcher) | The HTTP codes to use when checking for a successful health check response | `string` | `"200"` | no |
@@ -158,11 +170,11 @@ No resources.
 | <a name="input_unhealthy_threshold"></a> [unhealthy\_threshold](#input\_unhealthy\_threshold) | Number of consecutive failed health checks required before considering a target unhealthy | `number` | `2` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | The CIDR block for the VPC | `string` | n/a | yes |
 
-### Outputs
+## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_access_information"></a> [access\_information](#output\_access\_information) | Useful commands and URLs |
 | <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | The DNS name of the internal Application Load Balancer |
 | <a name="output_bastion_public_ip"></a> [bastion\_public\_ip](#output\_bastion\_public\_ip) | The public IP address of the Bastion Host. Use this to SSH into the bastion. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
