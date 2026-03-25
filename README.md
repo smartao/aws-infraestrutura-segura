@@ -28,7 +28,7 @@ The architecture was designed simulating a real corporate environment focusing o
 
 - **Private by Default**: No application instances (EC2) have a public IP (`associate_public_ip_address = false`). The application is not directly accessible from the internet.
 - **Dynamic Internal Load Balancer (ALB)**: The ALB is associated with private subnets and configured as internal (`internal = true`). It automatically configures its listener port (80 or 443) based on the specified protocol (`HTTP` or `HTTPS`). To ensure encryption in transit, `HTTPS` is the default and uses a self-signed certificate managed by the **ACM** module. The Security Group (`SG-ALB`) only accepts traffic from the internal network (VPC CIDR).
-- **Web Application Firewall (WAF)**: An optional but highly recommended WAF layer is managed via the `modules/waf` module to protect the ALB against common web exploits. In `prod` environments, the WAF is strictly **mandatory**.
+- **Web Application Firewall (WAF)**: An optional but highly recommended WAF layer is managed via the remote module `smartao/wafv2-web-acl/aws` to protect the ALB against common web exploits. In `prod` environments, the WAF is strictly **mandatory**.
 - **Bastion Host (VPN Client Simulation)**: This host is utilized strictly to simulate an external corporate connection, acting similarly to an AWS Client VPN endpoint. It is designed to evaluate internal application accessibility via HTTP/HTTPS only, without being used for traditional administrative SSH access to the application instances. Located in a public subnet, its Security Group (`SG-BASTION`) restricts access to configured trusted IPs, applying the principle of least privilege.
 - **Production Guardrails (Infrastructure Validation)**: The codebase employs strict `terraform_data` lifecycle preconditions enforcement to validate the security posture before deployment, especially when `environment = "prod"`:
   - 🛑 Blocks the wildcard `0.0.0.0/0` in Bastion ingress.
@@ -57,10 +57,10 @@ The provisioned infrastructure can be initialized and deployed from the desired 
    cd environments/dev
    ```
 
-2. **Create the SSH key (if it doesn't exist in the `keys` folder yet):**
+2. **Create the SSH key expected by this environment (if it doesn't exist in the `keys` folder yet):**
 
    ```bash
-   ssh-keygen -t rsa -b 4096 -f keys/projeto-aws-key -N ""
+   ssh-keygen -t rsa -b 4096 -f keys/dev_key -N ""
    ```
 
 3. **Initialize Terraform** (downloading modules and configuring the backend):
@@ -89,7 +89,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
    ```
 
    > [!TIP]
-   > If you set `dev_access_information = true` in your `.tfvars`, Terraform will output standard commands to access the Bastion Host and test the internal application URL.
+   > If you set `dev_access_information = true` in your `.tfvars`, Terraform will output helper commands to access the Bastion Host and test the internal application URL. Depending on your local SSH setup, you may need to explicitly provide the private key with `-i keys/dev_key`.
 
 7. **Deprovisioning (Destroy)**: To delete all created resources after testing:
 
@@ -114,6 +114,7 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 
 | Name | Version |
 |------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ### Modules
@@ -121,10 +122,11 @@ The provisioned infrastructure can be initialized and deployed from the desired 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | [smartao/acm-self-signed/aws](https://registry.terraform.io/modules/smartao/acm-self-signed/aws/latest) | 1.1.0 |
-| <a name="module_alb"></a> [alb](#module\_alb) | [smartao/alb/aws](https://registry.terraform.io/modules/smartao/alb/aws/latest) | 2.0.1 |
-| <a name="module_app"></a> [app](#module\_app) | [smartao/ec2-autoscaling-app/aws](https://registry.terraform.io/modules/smartao/ec2-autoscaling-app/aws/latest) | 0.1.0 |
+| <a name="module_alb"></a> [alb](#module_alb) | [smartao/alb/aws](https://registry.terraform.io/modules/smartao/alb/aws/latest) | 2.1.1 |
+| <a name="module_app"></a> [app](#module_app) | [smartao/ec2-autoscaling-app/aws](https://registry.terraform.io/modules/smartao/ec2-autoscaling-app/aws/latest) | 1.0.0 |
 | <a name="module_bastion"></a> [bastion](#module\_bastion) | [smartao/bastion/aws](https://registry.terraform.io/modules/smartao/bastion/aws/latest) | 3.0.0 |
 | <a name="module_network"></a> [network](#module\_network) | [smartao/secure-vpc/aws](https://registry.terraform.io/modules/smartao/secure-vpc/aws/latest) | 1.2.0 |
+| <a name="module_waf"></a> [waf](#module_waf) | [smartao/wafv2-web-acl/aws](https://registry.terraform.io/modules/smartao/wafv2-web-acl/aws/latest) | 0.1.0 |
 
 ## Resources
 
