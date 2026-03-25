@@ -121,15 +121,16 @@ variable "acm_common_name" {
 # =============================================================================
 # Module: ALB
 # =============================================================================
-variable "alb_listener_port" {
-  description = "The port on which the internal ALB listens"
-  type        = number
-}
 
 variable "alb_listener_protocol" {
   description = "The protocol used by the internal ALB listener"
   type        = string
   default     = "HTTPS"
+
+  validation {
+    condition     = contains(["HTTP", "HTTPS"], upper(var.alb_listener_protocol))
+    error_message = "VALIDATION: ALB listener protocol must be either 'HTTP' or 'HTTPS'."
+  }
 }
 
 

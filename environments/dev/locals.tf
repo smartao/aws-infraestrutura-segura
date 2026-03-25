@@ -13,6 +13,8 @@ locals {
     html_page_base64 = filebase64("${path.module}/scripts/${var.app_html_page}")
   })
 
-  certificate_arn = var.alb_listener_protocol == "HTTPS" ? module.acm[0].certificate_arn : null
+  certificate_arn = upper(var.alb_listener_protocol) == "HTTPS" ? module.acm[0].certificate_arn : null
+
+  alb_listener_port = upper(var.alb_listener_protocol) == "HTTPS" ? 443 : 80
 
 }
