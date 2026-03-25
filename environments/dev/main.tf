@@ -74,7 +74,8 @@ module "alb" {
 }
 
 module "waf" {
-  source = "git@github.com:smartao/terraform-aws-wafv2-web-acl.git"
+  source  = "smartao/wafv2-web-acl/aws"
+  version = "0.1.0"
 
   count = var.enable_waf ? 1 : 0
 
