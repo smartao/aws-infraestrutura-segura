@@ -41,7 +41,7 @@ module "acm" {
   source  = "smartao/acm-self-signed/aws"
   version = "1.1.0"
 
-  count = upper(var.alb_listener_protocol) == "HTTPS" ? 1 : 0
+  count = local.is_https ? 1 : 0
 
   common_name = var.acm_common_name
 
@@ -64,7 +64,7 @@ module "alb" {
   certificate_arn = local.certificate_arn
 
   listener_port         = local.alb_listener_port
-  listener_protocol     = upper(var.alb_listener_protocol)
+  listener_protocol     = local.alb_listener_protocol_upper
   target_group_port     = var.app_port
   target_group_protocol = var.app_protocol
 
